@@ -13,7 +13,7 @@
 
 <script>
 import IndexAnimation from "@/components/IndexAnimation";
-import Header from "@/components/Header"
+import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 let i = 0;

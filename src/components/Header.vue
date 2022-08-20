@@ -4,11 +4,11 @@
 <!--       昵称-->
 <!--      <span style="cursor: pointer">liugaorong</span>-->
 <!--       头像-->
-      <mu-avatar slot="left" :size="50" class="header-avatar">
-        <img src="https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4" alt="">
+      <mu-avatar slot="left" :size="40" class="header-avatar">
+        <img src="https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4" title="liugaorong" alt="liugaorong">
       </mu-avatar>
 <!--       tab栏-->
-      <mu-button @click="go(item)" class="tab" flat slot="right" v-for="(item,index) in info.menu" :key="item.name" :color="lightIndex===index?'#00e676':''">
+      <mu-button @click="go(item)" class="tab" flat slot="right" v-for="(item,index) in info.menu" :key="item.name" :color="lightIndex===index?'#2195f2':''">
         <mu-icon size="16" :value="item.icon"></mu-icon>
         {{item.name}}
       </mu-button>
@@ -20,9 +20,9 @@
         <mu-list @item-click="toggleMobileMenu(false)">
           <mu-list-item @click="go(item)" button v-for="(item,index) in info.menu" :key="item.name">
             <mu-list-item-action>
-              <mu-icon :value="item.icon" :color="lightIndex===index?'#00e676':''"></mu-icon>
+              <mu-icon :value="item.icon" :color="lightIndex===index?'#2195f2':''"></mu-icon>
             </mu-list-item-action>
-            <mu-list-item-title :style="{color:lightIndex===index?'#00e676':''}">{{ item.name }}</mu-list-item-title>
+            <mu-list-item-title :style="{color:lightIndex===index?'#2195f2':''}">{{ item.name }}</mu-list-item-title>
           </mu-list-item>
         </mu-list>
       </mu-bottom-sheet>
@@ -78,7 +78,7 @@
 const menus = [
   {
     name: "首页",
-    router: "index",
+    router: "home",
     icon: "home",
   },
   {
@@ -161,6 +161,12 @@ export default {
   .header-avatar {
     margin-left: 20px;
     cursor: pointer;
+    transform: scale(1.0);
+    transition: all 0.2s;
+    &:hover {
+      transform: scale(1.3);
+      transition: all 0.2s;
+    }
   }
 }
 @media screen and (max-width: 750px){

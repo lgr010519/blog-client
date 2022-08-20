@@ -19,7 +19,32 @@ const routes = [
     path: '/archives',
     name: 'archives',
     component: () => import('./views/Archives')
-  }
+  },
+  {
+    path: '/categories',
+    name: 'categories',
+    component: () => import('./views/Categories')
+  },
+  {
+    path: '/categories/details',
+    name: 'categoriesDetails',
+    component: () => import('./views/Categories/Details')
+  },
+  {
+    path: '/tags',
+    name: 'tags',
+    component: () => import('./views/Tags')
+  },
+  {
+    path: '/tags/details',
+    name: 'tagsDetails',
+    component: () => import('./views/Tags/Details')
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: () => import('./views/About')
+  },
 ]
 
 const router = new VueRouter({

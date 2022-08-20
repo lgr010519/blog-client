@@ -1,15 +1,77 @@
-.common{
+.common {
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  height: 100%;
-  .right-box{
+  .right-box {
     position: fixed;
-    top: 88px;
+    top: 80px;
     left: 70px;
     z-index: 3;
+  }
+}
+
+// 分类详情和标签详情
+@media screen and (min-width: 750px){
+  .pc-box {
+    width: 50%;
+    .header {
+      font-size: 0.4rem;
+    }
+    /deep/ .mu-item {
+      height: 40px;
+    }
+    .sub-title {
+      font-size: 0.4rem;
+      padding-left: 16px;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      .title {
+        display: inline-block;
+        width: 70%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+    .pagination {
+      margin: 0.53333rem 0;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .mobile-box{
+    display: none;
+  }
+}
+@media screen and (max-width: 750px) {
+  .mobile-box {
+    width: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    .sub-title {
+      font-size: 0.48rem;
+      padding: 0.42667rem 0.69333rem 0;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 0.26667rem;
+      .title {
+        display: inline-block;
+        width: 70%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
+  .pc-box{
+    display: none;
   }
 }
