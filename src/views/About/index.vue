@@ -15,14 +15,14 @@
 
     <div class="content">
       <mu-card class="card">
-        <mu-card-header v-if="isPC">
-          <mu-paper v-if="isPC" class="avatar-box" circle :z-depth="5">
+        <mu-card-header class="card-header">
+          <mu-paper class="avatar-box" circle :z-depth="5">
             <img class="avatar" v-lazy="avatar" />
           </mu-paper>
         </mu-card-header>
 
         <mu-card-text>
-          <div v-html="info.desc"></div>
+          <div v-html="info.intro"></div>
         </mu-card-text>
         <div class="tags">
           <mu-chip
@@ -74,8 +74,8 @@ export default {
             imgUrl: "http://www.nevergiveupt.top/archive.jpg",
           },
         ],
-        desc:
-          "有4年前端开发经验，熟悉Vue、React、Angular前端框架。熟悉小程序开发（Taro、Remax、MpVue、Wepy、 云开发）。熟悉NodeJs、Koa，Egg等后端知识。具有良好的沟通能力、工作协调能力、不断学习新技术、熟练前端技术、热衷于前端开发。",
+        intro:
+          "熟悉Vue、React、Angular前端框架，熟悉小程序开发（Taro、Remax、MpVue、Wepy、 云开发）。熟悉NodeJs、Koa，Egg等后端知识。具有良好的沟通能力、工作协调能力、不断学习新技术、熟练前端技术、热衷于前端开发。",
         tags: [
           {
             name: "Vue",
@@ -172,6 +172,9 @@ export default {
     padding-top: 64px;
     .card{
       margin-top: 100px;
+      .card-header{
+        display: block;
+      }
     }
   }
 }
@@ -180,6 +183,9 @@ export default {
     padding-top: 56px;
     .card{
       margin-top: 0;
+      .card-header{
+        display: none;
+      }
     }
   }
 }
