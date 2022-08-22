@@ -1,12 +1,12 @@
 <template>
   <div class="articles">
-    <Header :light-index="1" background="transparent"></Header>
+    <Header :light-index="1"></Header>
     <div class="content">
       <div class="right">
         <RightConfig></RightConfig>
       </div>
       <div class="wap-left left">
-        <mu-card class="card" v-for="item in info.list" :key="item._id">
+        <mu-card @click="goDetail(item)" class="card" v-for="item in info.list" :key="item._id">
           <div class="cover">
             <img class="cover-img" v-lazy="item.cover">
           </div>
@@ -125,6 +125,16 @@ export default {
       },
     };
   },
+  methods:{
+    goDetail(item){
+      this.$router.push({
+        name:'articlesDetails',
+        query:{
+          id:item._id
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -219,7 +229,7 @@ export default {
     display: block;
   }
   .right{
-    display: block;
+    display: flex;
   }
 }
 @media screen and (max-width: 750px) {
