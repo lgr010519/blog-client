@@ -46,7 +46,13 @@
               <mu-button class="cursor-default" flat color="primary">点赞（1000）</mu-button>
               <mu-button class="cursor-default" flat color="#9e9e9e">2022-08-22 20:30</mu-button>
             </mu-card-actions>
-            <div>md内容</div>
+            <mavon-editor
+              v-model="content"
+              defaultOpen="preview"
+              :toolbarsFlag="false"
+              :subfield="false"
+              :navigation="true"
+              codeStyle="tomorrow-night-eighties" />
             <mu-card-actions>
               <mu-button class="cursor-default" flat color="primary">
                 <mu-icon left value="dns"></mu-icon>分类
@@ -71,6 +77,9 @@
               </mu-button>
             </mu-tooltip>
           </div>
+          <mu-card class="card" id="comment">
+            <Comment @comment="comment" :commentSuccess="commentSuccess"></Comment>
+          </mu-card>
         </div>
       </div>
     </div>
@@ -82,12 +91,17 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RightConfig from "@/components/RightConfig";
+import Comment from "@/components/Comment";
+import {markdown} from "@/utils/markdown";
+import Clipboard from 'clipboard'
+
 export default {
   name: "articlesDetails",
   components: {
     Header,
     Footer,
     RightConfig,
+    Comment,
   },
   data(){
     return {
@@ -97,6 +111,26 @@ export default {
         cover:require('@/assets/photo.png')
       },
       toc:[],
+      content:'',
+      commentSuccess: false,
+    }
+  },
+  mounted() {
+    this.content = markdown(this.mavonEditor, '在前端开发中， html 转 pdf 是最常见的需求，实现这块需求的开发[html2canvas](http://html2canvas.hertzen.com/)和 [jspdf](http://mozilla.github.io/pdf.js/getting_started/) 是最常用的两个插件，插件都是现成的。\\n### 1.安装\\n### 2.使用 \\n ```js \\n console.log(123); \\n```')
+    this.$nextTick(()=>{
+      let clipboard = new Clipboard('.copy-btn')
+      clipboard.on('success',()=>{
+        this.$toast.success('复制成功')
+      })
+      clipboard.on('error',()=>{
+        this.$toast.success('复制失败')
+      })
+    })
+  },
+  methods:{
+    comment(data){
+      console.log('评论数据',data)
+      this.commentSuccess = true
     }
   }
 }
