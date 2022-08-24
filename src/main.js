@@ -6,7 +6,7 @@ Vue.config.productionTip = false
 import './global.less'
 import 'lib-flexible'
 import 'muse-ui/lib/styles/base.less';
-import { Button, Select, AppBar, Icon, Menu, List, Popover, Avatar, BottomSheet, Paper, Pagination, Chip, Card, Carousel, Tooltip, TextField, Dialog, Snackbar } from 'muse-ui';
+import { Button, Select, AppBar, Icon, Menu, List, Popover, Avatar, BottomSheet, Paper, Pagination, Chip, Card, Carousel, Tooltip, TextField, Dialog, Snackbar, Divider, Badge, Form, AutoComplete } from 'muse-ui';
 import 'muse-ui/lib/styles/theme.less';
 
 Vue.use(Button);
@@ -27,6 +27,10 @@ Vue.use(Tooltip);
 Vue.use(TextField);
 Vue.use(Dialog);
 Vue.use(Snackbar);
+Vue.use(Divider);
+Vue.use(Badge);
+Vue.use(Form);
+Vue.use(AutoComplete);
 
 import Toast from 'muse-ui-toast';
 
@@ -41,6 +45,9 @@ Vue.use(Toast, {
   errorIcon: "warning", // 错误信息图标
 });
 
+import Helpers from 'muse-ui/lib/Helpers';
+Vue.use(Helpers);
+
 import VueLazyload from "vue-lazyload";
 
 Vue.use(VueLazyload, {
@@ -53,6 +60,11 @@ Vue.use(VueLazyload, {
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 Vue.use(mavonEditor)
+
+//过滤器
+import * as filters from "./filter";
+Object.keys(filters).forEach((k) => Vue.filter(k, filters[k])); //注册过滤器
+Vue.prototype.filterDate = filters.filterDate; //时间过滤方法
 
 Vue.prototype.avatar = "https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4"
 

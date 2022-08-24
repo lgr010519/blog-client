@@ -114,9 +114,22 @@
 // 文章导航
 .v-note-wrapper .v-note-panel .v-note-navigation-wrapper.transition {
   position: fixed;
-  top: 100px;
-  right: 0;
-  height: 500px;
+  top: 80px;
+  right: 40px;
+  height: min-content;
+  border-radius: 5px;
+  margin-bottom: 0.48rem;
+  box-shadow: 0 3px 3px -2px rgb(0 0 0 / 20%), 0 3px 4px 0 rgb(0 0 0 / 14%), 0 1px 8px 0 rgb(0 0 0 / 12%);
+  .v-note-navigation-title{
+    font-size: 20px;
+    .fa-mavon-times::before{
+      display: none;
+    }
+  }
+}
+.v-note-wrapper .v-note-panel .v-note-navigation-wrapper .v-note-navigation-content h4 {
+  padding-left: 12px !important;
+  font-size: 15px;
 }
 
 // 代码高亮

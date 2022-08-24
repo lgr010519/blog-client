@@ -2,30 +2,23 @@
   <div class="details">
     <Header :light-index="1"></Header>
     <div class="toc-fixed">
-      <mu-card class="card">
-        <div class="toc">
-          <div class="title">文章目录</div>
-          <div><a href="">标题1</a></div>
-          <div><a href="">标题2</a></div>
-        </div>
-      </mu-card>
-      <div class="action" :class="toc.length > 0?'':'noContents'">
-        <mu-tooltip placement="top" content="点赞">
-          <mu-button fab color="primary">
-            <mu-icon value="thumb_up"></mu-icon>
-          </mu-button>
-        </mu-tooltip>
-        <mu-tooltip placement="top" content="收藏">
-          <mu-button fab color="purple500">
-            <mu-icon value="grade"></mu-icon>
-          </mu-button>
-        </mu-tooltip>
-        <mu-tooltip placement="top" content="评论">
-          <mu-button fab color="red">
-            <mu-icon value="chat"></mu-icon>
-          </mu-button>
-        </mu-tooltip>
-      </div>
+<!--      <div class="action" :class="toc.length > 0?'':'noContents'">-->
+<!--        <mu-tooltip placement="top" content="点赞">-->
+<!--          <mu-button fab color="primary">-->
+<!--            <mu-icon value="thumb_up"></mu-icon>-->
+<!--          </mu-button>-->
+<!--        </mu-tooltip>-->
+<!--        <mu-tooltip placement="top" content="收藏">-->
+<!--          <mu-button fab color="purple500">-->
+<!--            <mu-icon value="grade"></mu-icon>-->
+<!--          </mu-button>-->
+<!--        </mu-tooltip>-->
+<!--        <mu-tooltip placement="top" content="评论">-->
+<!--          <mu-button fab color="red">-->
+<!--            <mu-icon value="chat"></mu-icon>-->
+<!--          </mu-button>-->
+<!--        </mu-tooltip>-->
+<!--      </div>-->
     </div>
     <div class="content">
       <div class="right">
@@ -76,10 +69,23 @@
                 <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
+            <mu-tooltip placement="top" content="评论">
+              <mu-button fab color="red">
+                <mu-icon value="chat"></mu-icon>
+              </mu-button>
+            </mu-tooltip>
           </div>
+<!--          评论-->
           <mu-card class="card" id="comment">
             <Comment @comment="comment" :commentSuccess="commentSuccess"></Comment>
           </mu-card>
+<!--          评论列表-->
+          <mu-card v-if="commentList.length > 0" class="card">
+            <mu-card-title title="评论（3）"></mu-card-title>
+            <mu-divider></mu-divider>
+            <CommentList :list="commentList" :articleId="info._id" :articleTitle="info.title"></CommentList>
+          </mu-card>
+          <prev-next :prev="prev" :next="next"></prev-next>
         </div>
       </div>
     </div>
@@ -92,6 +98,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RightConfig from "@/components/RightConfig";
 import Comment from "@/components/Comment";
+import CommentList from "@/components/CommentList"
+import PrevNext from "@/components/PrevNext";
 import {markdown} from "@/utils/markdown";
 import Clipboard from 'clipboard'
 
@@ -102,17 +110,114 @@ export default {
     Footer,
     RightConfig,
     Comment,
+    CommentList,
+    PrevNext,
   },
   data(){
     return {
       info:{
+        _id:'1',
         title:'使用jspdf+canvas2html将网页保存为pdf文件',
         introduction:'1234567890',
         cover:require('@/assets/photo.png')
       },
       toc:[],
-      content:'',
+      content:'#### how to use mavonEditor in nuxt.js',
       commentSuccess: false,
+      commentList: [
+        {
+          targetReplayId: "6084ce48e268db458626591a",
+          targetReplayContent: "good",
+          currentReplayContent: "这篇文章写得不错",
+          commentTime: 1623048202,
+          auditTime: 0,
+          auditStatus: "3",
+          _id: "60bdc00ac4b76ef12cd151aa",
+          avatar: "http://www.nevergiveupt.top/user_avatar.png",
+          email: "13412345678@163.com",
+          nickName: "Never",
+          articleId: "601134b4c4ae0128013d322d",
+          articleTitle: "测试评论文章",
+        },
+        {
+          targetReplayId: "",
+          targetReplayContent: "",
+          currentReplayContent: "good",
+          commentTime: 1619316296,
+          auditTime: 1619316309,
+          auditStatus: "1",
+          _id: "6084ce48e268db458626591a",
+          avatar:
+            "http://img.nevergiveupt.top/78e79747e0658b0d1766c8928d784653.png",
+          email: "1916579055@qq.com",
+          nickName: "永不放弃",
+          articleId: "601134b4c4ae0128013d322d",
+          articleTitle: "测试评论文章",
+        },
+        {
+          targetReplayId: "",
+          targetReplayContent: "",
+          currentReplayContent: "好，不错",
+          commentTime: 1611745373,
+          auditTime: 1612108800,
+          auditStatus: "1",
+          _id: "6011485dc4ae0128013d3246",
+          avatar:
+            "http://img.nevergiveupt.top/78e79747e0658b0d1766c8928d784653.png",
+          email: "1916579055@qq.com",
+          nickName: "永不放弃",
+          articleId: "601134b4c4ae0128013d322d",
+          articleTitle: "测试评论文章",
+        },
+      ],
+      prev: {
+        categories: "技术",
+        collect: 0,
+        comment: 0,
+        content:
+          "### 1.toRefs↵把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref↵↵`应用`: ",
+        cover: "http://nevergiveupt.top/vue/vue_composition_api.jpeg",
+        createTime: 1611739740,
+        introduction:
+          "toRefs把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。",
+        isCollect: true,
+        isComment: true,
+        isLike: true,
+        isReward: false,
+        like: 0,
+        publishStatus: 1,
+        sort: 0,
+        status: 1,
+        tags: ["Vue"],
+        title: "Vue3.x-toRefs & shallowReactive & shallowRef & shallowReadonly",
+        updateTime: 1611739813,
+        views: 5,
+        _id: "6011325cc4ae0128013d3210",
+      },
+      next: {
+        categories: "技术",
+        collect: 0,
+        comment: 0,
+        content:
+          "### 1.注册GitHub账号并创建一个OAuth Apps↵↵登录GitHub账号然后右上角找到你的头像点击",
+        cover: "http://nevergiveupt.top/egg/github_signin.png",
+        createTime: 1612341189,
+        introduction:
+          "『登录鉴权』 是一个常见的业务场景，包括『账号密码登录方式』和『第三方统一登录』。其中，后者我们经常使用到，如 Google， GitHub，QQ 统一登录，它们都是基于 OAuth 规范。",
+        isCollect: true,
+        isComment: true,
+        isLike: true,
+        isReward: true,
+        like: 1,
+        publishStatus: 1,
+        sort: 0,
+        status: 1,
+        tags: ["Node.js", "Egg"],
+        title: "使用Egg通过GitHub来实现用户登录",
+        updateTime: 1612341807,
+        views: 6,
+        _id: "601a5fc5e268db458626523d",
+      },
     }
   },
   mounted() {
@@ -126,12 +231,24 @@ export default {
         this.$toast.success('复制失败')
       })
     })
+    this.commentList = this.listToTree(this.commentList)
   },
   methods:{
     comment(data){
       console.log('评论数据',data)
       this.commentSuccess = true
-    }
+    },
+    listToTree(list) {
+      let info = list.reduce(
+        (map, node) => ((map[node._id] = node), (node.children = []), map),
+        {}
+      );
+      return list.filter((node) => {
+        info[node.targetReplayId] &&
+        info[node.targetReplayId].children.push(node);
+        return !node.targetReplayId;
+      });
+    },
   }
 }
 </script>
