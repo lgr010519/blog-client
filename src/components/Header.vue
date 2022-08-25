@@ -75,7 +75,7 @@
         </mu-slide-left-transition>
       </div>
       <div class="tool-row">
-        <mu-tooltip placement="right-start" content="登录/注册/搜索">
+        <mu-tooltip placement="right" content="登录/注册/搜索">
           <mu-button
             @click="showToolBtn = !showToolBtn"
             fab
@@ -261,6 +261,19 @@ export default {
     &:hover {
       transform: scale(1.3);
       transition: all 0.2s;
+    }
+  }
+}
+.tool{
+  position: fixed;
+  left: 0;
+  bottom: 2.66667rem;
+  .tool-row{
+    margin-top: 20px;
+    height: 56px;
+    .search-fab{
+      margin-left: -28px;
+      margin-right: 20px;
     }
   }
 }

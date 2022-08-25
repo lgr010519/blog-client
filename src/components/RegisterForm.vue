@@ -9,8 +9,8 @@
       :overlay-close="false"
       :open.sync="open"
     >
-      <mu-form ref="form" :model="validateForm">
-        <mu-form-item label="Email（必填）" prop="email" :rules="emailRules">
+      <mu-form ref="form" :model="validateForm" label-width="90" label-position="right">
+        <mu-form-item label="邮箱(必填)" prop="email" :rules="emailRules">
           <mu-text-field
             v-model.trim="validateForm.email"
             prop="email"
@@ -25,7 +25,7 @@
         </mu-form-item>
 
         <mu-form-item
-          label="密码（必填）"
+          label="密码(必填)"
           prop="password"
           :rules="passwordRules"
         >
@@ -76,18 +76,18 @@
       </mu-form>
       <mu-button slot="actions" flat href="/api/v1/web/github/login">
         <mu-avatar style="margin-right: 10px" size="30">
-          <img :src="Icon.github" alt /> </mu-avatar
-        >Github
+          <img :src="Icon.github" />
+        </mu-avatar>
+        Github
       </mu-button>
       <mu-button slot="actions" flat small @click="clear">取消</mu-button>
-      <mu-button slot="actions" flat small color="primary" @click="submit"
-      >注册</mu-button
-      >
+      <mu-button slot="actions" flat small color="primary" @click="submit">注册</mu-button>
     </mu-dialog>
   </div>
 </template>
-<script>
-import { Icon } from "@/utils";
+<script>var visibility;
+
+import {Icon} from "@/utils";
 
 export default {
   props: {
@@ -108,7 +108,7 @@ export default {
       visibility: false,
       captcha: "",
       emailRules: [
-        { validate: (val) => !!val, message: "邮箱必填！" },
+        {validate: (val) => !!val, message: "邮箱不能为空"},
         {
           validate: (val) => {
             let reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
@@ -118,32 +118,32 @@ export default {
         },
       ],
       nickNameRules: [
-        { validate: (val) => val.length <= 20, message: "昵称最大20个字符！" },
+        {validate: (val) => val.length <= 20, message: "昵称不能超过20个字符"},
       ],
       passwordRules: [
-        { validate: (val) => !!val, message: "密码必填！" },
+        {validate: (val) => !!val, message: "密码不能为空"},
         {
           validate: (val) => {
-            let reg = /^[a-zA-Z]\w{5,19}$/;
+            let reg = /^[a-zA-Z0-9_]{6,20}$/;
             return reg.test(val);
           },
-          message: "以字母开头，长度在6~20之间，只能包含字母、数字和下划线！",
+          message: "长度在6~20之间，只能包含字母、数字和下划线",
         },
       ],
       confirmPasswordRules: [
-        { validate: (val) => !!val, message: "请填写确认密码！" },
+        {validate: (val) => !!val, message: "请填写确认密码"},
         {
           validate: (val) => {
             return this.validateForm.password === val;
           },
-          message: "密码不一致，请重新输入！",
+          message: "密码不一致",
         },
       ],
-      captchaRules: [{ validate: (val) => !!val, message: "请输入验证码" }],
+      captchaRules: [{validate: (val) => !!val, message: "请输入验证码"}],
       introductionRules: [
         {
           validate: (val) => val.length <= 1000,
-          message: "最大1000字符",
+          message: "最大为1000个字符",
         },
       ],
       validateForm: {

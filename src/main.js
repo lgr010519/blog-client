@@ -48,6 +48,9 @@ Vue.use(Toast, {
 import Helpers from 'muse-ui/lib/Helpers';
 Vue.use(Helpers);
 
+import { isPC } from "@/utils";
+Vue.prototype.isPC = isPC;
+
 import VueLazyload from "vue-lazyload";
 
 Vue.use(VueLazyload, {

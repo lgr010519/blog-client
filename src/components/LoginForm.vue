@@ -8,7 +8,7 @@
       :overlay-close="false"
       :open.sync="open"
     >
-      <mu-form ref="form" :model="validateForm">
+      <mu-form ref="form" :model="validateForm" label-width="60" label-position="right">
         <mu-form-item label="Email" prop="email" :rules="emailRules">
           <mu-text-field v-model.trim="validateForm.email" prop="email"></mu-text-field>
         </mu-form-item>

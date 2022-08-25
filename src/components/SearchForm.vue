@@ -1,6 +1,6 @@
 <template>
   <div>
-    <mu-dialog width="60%" :open.sync="openModal">
+    <mu-dialog :fullscreen="!isPC" width="60%" :open.sync="openModal">
       <slot name="title">
         <mu-auto-complete
           action-icon="search"
@@ -42,7 +42,7 @@
         </mu-list-item>
       </mu-list>
 
-      <mu-button class="close" icon @click="clear(false)">
+      <mu-button v-if="!isPC" class="close" icon @click="clear(false)">
         <mu-icon value="close"></mu-icon>
       </mu-button>
     </mu-dialog>
@@ -63,9 +63,57 @@ export default {
   },
   data() {
     return {
-      keywords: [],
+      keywords: [
+        'Apple', 'Apricot', 'Avocado',
+        'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry',
+        'Boysenberry', 'Blood Orange',
+        'Cantaloupe', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry',
+        'Coconut', 'Cranberry', 'Clementine',
+        'Damson', 'Date', 'Dragonfruit', 'Durian',
+        'Elderberry',
+        'Feijoa', 'Fig',
+        'Goji berry', 'Gooseberry', 'Grape', 'Grapefruit', 'Guava',
+        'Honeydew', 'Huckleberry',
+        'Jabouticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Juniper berry',
+        'Kiwi fruit', 'Kumquat',
+        'Lemon', 'Lime', 'Loquat', 'Lychee',
+        'Nectarine',
+        'Mango', 'Marion berry', 'Melon', 'Miracle fruit', 'Mulberry', 'Mandarine',
+        'Olive', 'Orange',
+        'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plum', 'Pineapple',
+        'Pumpkin', 'Pomegranate', 'Pomelo', 'Purple Mangosteen',
+        'Quince',
+        'Raspberry', 'Raisin', 'Rambutan', 'Redcurrant',
+        'Salal berry', 'Satsuma', 'Star fruit', 'Strawberry', 'Squash', 'Salmonberry',
+        'Tamarillo', 'Tamarind', 'Tomato', 'Tangerine',
+        'Ugli fruit',
+        'Watermelon'
+      ],
       keyword: "",
-      list: null,
+      list: [{
+        categories: "技术",
+        collect: 0,
+        comment: 0,
+        content:
+          "### 1.toRefs↵把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref↵↵`应用`: ",
+        cover: "http://nevergiveupt.top/vue/vue_composition_api.jpeg",
+        createTime: 1611739740,
+        introduction:
+          "toRefs把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。",
+        isCollect: true,
+        isComment: true,
+        isLike: true,
+        isReward: false,
+        like: 0,
+        publishStatus: 1,
+        sort: 0,
+        status: 1,
+        tags: ["Vue"],
+        title: "Vue3.x-toRefs & shallowReactive & shallowRef & shallowReadonly",
+        updateTime: 1611739813,
+        views: 5,
+        _id: "6011325cc4ae0128013d3210",
+      }],
       fullscreen: false
     };
   },
@@ -79,7 +127,7 @@ export default {
     clear(val) {
       this.keyword = "";
       this.$emit("toggle", val);
-      this.list = null;
+      this.list = [];
     },
     async handleSearch() {
       if (!this.keyword) return;

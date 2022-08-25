@@ -1,3 +1,4 @@
+// 首页全屏动画
 export const index_fullScreenAnimation = (ref_canvas) => {
     let size = 0;
     function project3D(x, y, z, lets) {
@@ -255,6 +256,29 @@ export const index_fullScreenAnimation = (ref_canvas) => {
     frame();
 };
 
+// 判断PC端和移动端
+export const isPC = (() => {
+    let userAgentInfo = navigator.userAgent;
+    let Agents = [
+        "Android",
+        "iPhone",
+        "SymbianOS",
+        "Windows Phone",
+        "iPad",
+        "iPod",
+        "XiaoMi/MiuiBrowser",
+    ];
+    let pc = true;
+    for (let v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            pc = false;
+            break;
+        }
+    }
+    return pc && window.innerWidth > 750;
+})();
+
+// 获取随机色
 export const colors = [
     "#424242",
     "#37474f",
@@ -272,15 +296,14 @@ export const colors = [
     "#673ab7",
     "#4db6ac",
 ];
-
 export const randomNum = (m, n) => {
     return Math.floor(Math.random() * (m - n) + n);
 };
-
 export const randomColor = () => {
     return colors[randomNum(1, 15)];
 };
 
+// 外链图标
 export const Icon = {
     github: "http://www.nevergiveupt.top/github.png",
     sf: "http://www.nevergiveupt.top/sf.jpeg",
