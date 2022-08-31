@@ -69,6 +69,62 @@ import * as filters from "./filter";
 Object.keys(filters).forEach((k) => Vue.filter(k, filters[k])); //注册过滤器
 Vue.prototype.filterDate = filters.filterDate; //时间过滤方法
 
+import theme from 'muse-ui/lib/theme';
+theme.add('selfDark', {
+  primary: '#1976d2',
+  secondary: '#ff4081',
+  success: '#4caf50',
+  warning: '#fdd835',
+  info: '#2196f3',
+  error: '#f44336',
+  track: '#757575',
+  text: {
+    primary: '#fff',
+    secondary: 'rgba(255, 255, 255, 0.7)',
+    alternate: '#303030',
+    disabled: 'rgba(255, 255, 255, 0.3)',
+    hint: 'rgba(255, 255, 255, 0.3)' // 提示文字颜色
+  },
+  divider: 'rgba(255, 255, 255, 0.3)',
+  background: {
+    paper: '#424242',
+    chip: '#616161',
+    default: '#303030'
+  }
+}, 'dark');
+theme.add('selfLight', {
+  primary: '#2196f3',
+  secondary: '#ff4081',
+  success: '#4caf50',
+  warning: '#fdd835',
+  info: '#2196f3',
+  error: '#f44336',
+  track: '#bdbdbd',
+  text: {
+    primary: 'rgba(0, 0, 0, 0.87)',
+    secondary: 'rgba(0, 0, 0, 0.54)',
+    alternate: '#fff',
+    disabled: 'rgba(0, 0, 0, 0.38)',
+    hint: 'rgba(0, 0, 0, 0.38)' // 提示文字颜色
+  },
+  divider: 'rgba(0, 0, 0, 0.12)',
+  background: {
+    paper: '#fff',
+    chip: '#e0e0e0',
+    default: '#fafafa'
+  }
+}, 'light');
+const hours = new Date().getHours()
+let defaultTheme = ''
+if (hours >= 8 && hours <= 18){
+  defaultTheme = 'selfLight'
+}else {
+  defaultTheme = 'selfDark'
+}
+const selfTheme = localStorage.getItem('theme') || defaultTheme
+theme.use(selfTheme);
+Vue.prototype.theme = theme
+
 Vue.prototype.avatar = "https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4"
 
 new Vue({

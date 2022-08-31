@@ -32,11 +32,15 @@
       </mu-button>
       <mu-popover :open.sync="openTheme" :trigger="triggerTheme">
         <mu-list>
-          <mu-list-item button>
-            <mu-list-item-title>Light</mu-list-item-title>
+          <mu-list-item button @click="toggleTheme('selfLight')">
+            <mu-list-item-title>
+              <mu-icon :color="myTheme === 'selfLight' ? 'primary' : ''" value="brightness_7"></mu-icon>
+            </mu-list-item-title>
           </mu-list-item>
-          <mu-list-item button>
-            <mu-list-item-title>Dark</mu-list-item-title>
+          <mu-list-item button @click="toggleTheme('selfDark')">
+            <mu-list-item-title>
+              <mu-icon :color="myTheme === 'selfDark' ? 'primary' : ''" value="brightness_4"></mu-icon>
+            </mu-list-item-title>
           </mu-list-item>
         </mu-list>
       </mu-popover>
@@ -47,7 +51,7 @@
       </mu-button>
       <mu-popover :open.sync="openUser" :trigger="triggerUser">
         <mu-list>
-          <mu-list-item button>
+          <mu-list-item button @click="$router.push({name: 'user'})">
             <mu-list-item-title>个人中心</mu-list-item-title>
           </mu-list-item>
           <mu-list-item button>
@@ -129,6 +133,13 @@
       :open="openSearchModal"
       @toggle="toggleSearchModal"
     ></SearchForm>
+    <mu-slide-bottom-transition>
+      <mu-tooltip placement="top" content="返回顶部">
+        <mu-button v-show="showBackTop" @click="scrollTop" class="back-top" fab color="secondary">
+          <mu-icon value="arrow_upward"></mu-icon>
+        </mu-button>
+      </mu-tooltip>
+    </mu-slide-bottom-transition>
   </div>
 </template>
 
@@ -215,11 +226,31 @@ export default {
       openSearchModal: false, // 打开搜索弹框
       openLoginModal: false, // 打开登录弹框
       openRegisterModal: false, // 打开注册弹框
+
+      showBackTop:false,
+
+      myTheme: '',
     }
   },
   mounted () {
     this.triggerTheme = this.$refs.theme.$el;
     this.triggerUser = this.$refs.user.$el;
+    window.onscroll=()=>{
+      if (document.documentElement.scrollTop + document.body.scrollTop > 100){
+        this.showBackTop = true
+      }else{
+        this.showBackTop = false
+      }
+    }
+
+    const hours = new Date().getHours()
+    let defaultTheme = ''
+    if (hours >= 8 && hours <= 18){
+      defaultTheme = 'selfLight'
+    }else {
+      defaultTheme = 'selfDark'
+    }
+    this.myTheme = localStorage.getItem('theme') || defaultTheme
   },
   methods:{
     // 切换移动端
@@ -242,6 +273,18 @@ export default {
     },
     toggleSearchModal(bool) {
       this.openSearchModal = bool;
+    },
+    scrollTop(){
+      document.body.scrollIntoView({
+        block:'start',
+        behavior:'smooth'
+      })
+    },
+    toggleTheme(myTheme){
+      this.theme.use(myTheme)
+      this.myTheme = myTheme
+      localStorage.setItem('theme',myTheme)
+      this.openTheme = false
     },
   }
 }
@@ -276,6 +319,12 @@ export default {
       margin-right: 20px;
     }
   }
+}
+.back-top{
+  position: fixed;
+  right: 0.266667rem;
+  bottom: 0.4rem;
+  background: #595959;
 }
 @media screen and (max-width: 750px){
   .tab{
