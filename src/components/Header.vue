@@ -5,7 +5,7 @@
 <!--      <span style="cursor: pointer">liugaorong</span>-->
 <!--       头像-->
       <mu-avatar slot="left" :size="40" class="header-avatar">
-        <img src="https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4" title="liugaorong" alt="liugaorong">
+        <img :src="userInfo?.avatar" title="liugaorong" alt="liugaorong">
       </mu-avatar>
 <!--       tab栏-->
       <mu-button @click="go(item)" class="tab" flat slot="right" v-for="(item,index) in info.menu" :key="item.name" :color="lightIndex===index?'#2195f2':''">
@@ -45,8 +45,8 @@
         </mu-list>
       </mu-popover>
 <!--       用户操作-->
-      <mu-button flat ref="user" slot="right" @click="openUser = !openUser">
-        <span>liugaorong</span>
+      <mu-button flat ref="user" slot="right" @click="openUser = !openUser" v-if="userInfo">
+        <span>{{userInfo?.nickName}}</span>
         <mu-icon value="expand_more"></mu-icon>
       </mu-button>
       <mu-popover :open.sync="openUser" :trigger="triggerUser">
@@ -54,7 +54,7 @@
           <mu-list-item button @click="$router.push({name: 'user'})">
             <mu-list-item-title>个人中心</mu-list-item-title>
           </mu-list-item>
-          <mu-list-item button>
+          <mu-list-item button @click="logout">
             <mu-list-item-title>退出登录</mu-list-item-title>
           </mu-list-item>
         </mu-list>
@@ -63,8 +63,8 @@
     <!-- 搜索按钮 -->
     <div class="tool" v-if="isShowAction">
 
-      <!-- 如果用户已经登录了那就不展示登录和注册按钮 !user 控制 -->
-      <div v-if="info.login && !user" class="tool-row">
+      <!-- 如果用户已经登录了那就不展示登录和注册按钮 !userInfo 控制 -->
+      <div v-if="info.login && !userInfo" class="tool-row">
         <mu-slide-left-transition>
           <mu-button
             v-show="showToolBtn"
@@ -104,8 +104,8 @@
         </mu-slide-left-transition>
       </div>
 
-      <!-- 如果用户已经登录了那就不展示登录和注册按钮 !user 控制 -->
-      <div v-if="info.register && !user" class="tool-row">
+      <!-- 如果用户已经登录了那就不展示登录和注册按钮 !userInfo 控制 -->
+      <div v-if="info.register && !userInfo" class="tool-row">
         <mu-slide-left-transition>
           <mu-button
             v-show="showToolBtn"
@@ -124,6 +124,7 @@
     <RegisterForm
       :open="openRegisterModal"
       @toggle="toggleRegisterModal"
+      @toLogin="toggleLoginModal"
     ></RegisterForm>
     <LoginForm
       :open="openLoginModal"
@@ -179,6 +180,8 @@ const menus = [
 import RegisterForm from "@/components/RegisterForm";
 import LoginForm from "@/components/LoginForm";
 import SearchForm from "@/components/SearchForm";
+import {logout} from "@/api/loginRegister";
+
 export default {
   components:{
     RegisterForm,
@@ -221,7 +224,7 @@ export default {
         register: true,// 是否开启注册
       },
       showToolBtn: false, // 点击切换显示操作按钮
-      user: JSON.parse(localStorage.getItem("user")), // 用户信息
+      userInfo: JSON.parse(localStorage.getItem("userInfo")), // 用户信息
 
       openSearchModal: false, // 打开搜索弹框
       openLoginModal: false, // 打开登录弹框
@@ -285,6 +288,16 @@ export default {
       this.myTheme = myTheme
       localStorage.setItem('theme',myTheme)
       this.openTheme = false
+    },
+    async logout(){
+      const res = await logout()
+        if (res.code === 200){
+            this.$toast.success(res.msg)
+            localStorage.removeItem('userInfo')
+            location.reload()
+        }else {
+            this.$toast.error('退出登录失败，请重试')
+        }
     },
   }
 }

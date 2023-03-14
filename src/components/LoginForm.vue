@@ -9,7 +9,7 @@
       :open.sync="open"
     >
       <mu-form ref="form" :model="validateForm" label-width="60" label-position="right">
-        <mu-form-item label="Email" prop="email" :rules="emailRules">
+        <mu-form-item label="邮箱" prop="email" :rules="emailRules">
           <mu-text-field v-model.trim="validateForm.email" prop="email"></mu-text-field>
         </mu-form-item>
 
@@ -17,7 +17,7 @@
           <mu-text-field v-model.trim="validateForm.password" type="password" prop="password"></mu-text-field>
         </mu-form-item>
 
-        <mu-form-item label="验证码" prop="captcha" :rules="captchaRules">
+        <mu-form-item label="验证码" prop="captcha">
           <mu-text-field placeholder="区分大小写" v-model.trim="validateForm.captcha" prop="captcha">
             <div @click="getCaptcha" class="captcha" v-html="captcha"></div>
           </mu-text-field>
@@ -38,6 +38,7 @@
 </template>
 <script>
 import { Icon } from "@/utils";
+import {login} from "@/api/loginRegister";
 
 export default {
   props: {
@@ -57,7 +58,7 @@ export default {
       captcha: "",
       emailRules: [{ validate: val => !!val, message: "邮箱必填！" }],
       passwordRules: [{ validate: val => !!val, message: "密码必填！" }],
-      captchaRules: [{ validate: val => !!val, message: "请输入验证码" }],
+      // captchaRules: [{ validate: val => !!val, message: "请输入验证码" }],
       validateForm: {
         email: "",
         password: ""
@@ -72,7 +73,15 @@ export default {
     submit() {
       this.$refs.form.validate().then(async result => {
         if (result) {
-          console.log(this.validateForm);
+          const res = await login(this.validateForm)
+          if (res.code === 200){
+            this.$toast.success(res.msg);
+            this.$emit("toggle", false);
+            localStorage.setItem('userInfo',JSON.stringify(res.data.userInfo))
+            location.reload();
+          }else {
+            this.$toast.error(res.msg);
+          }
         }
       });
     },

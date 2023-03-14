@@ -42,6 +42,90 @@ export default {
         name: 'Node',
         articleNum: 10,
         color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Vue',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'React',
+        articleNum: 10,
+        color: randomColor(),
+      },{
+        name: 'Node',
+        articleNum: 10,
+        color: randomColor(),
       }]
     }
   },

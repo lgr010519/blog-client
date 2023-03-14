@@ -17,7 +17,7 @@
           ></mu-text-field>
         </mu-form-item>
 
-        <mu-form-item label="昵称" prop="nickName" :rules="nickNameRules">
+        <mu-form-item label="昵称(必填)" prop="nickName" :rules="nickNameRules">
           <mu-text-field
             v-model.trim="validateForm.nickName"
             prop="nickName"
@@ -50,7 +50,7 @@
           ></mu-text-field>
         </mu-form-item>
 
-        <mu-form-item label="验证码" prop="captcha" :rules="captchaRules">
+        <mu-form-item label="验证码" prop="captcha">
           <mu-text-field
             placeholder="区分大小写"
             v-model.trim="validateForm.captcha"
@@ -58,6 +58,13 @@
           >
             <div @click="getCaptcha" class="captcha" v-html="captcha"></div>
           </mu-text-field>
+        </mu-form-item>
+
+        <mu-form-item label="头像" prop="avatar" :rules="avatarRules">
+          <mu-text-field
+            v-model.trim="validateForm.avatar"
+            prop="avatar"
+          ></mu-text-field>
         </mu-form-item>
 
         <mu-form-item
@@ -85,9 +92,9 @@
     </mu-dialog>
   </div>
 </template>
-<script>var visibility;
-
+<script>
 import {Icon} from "@/utils";
+import {register} from "@/api/loginRegister";
 
 export default {
   props: {
@@ -118,6 +125,7 @@ export default {
         },
       ],
       nickNameRules: [
+        {validate: (val) => !!val, message: "昵称不能为空"},
         {validate: (val) => val.length <= 20, message: "昵称不能超过20个字符"},
       ],
       passwordRules: [
@@ -139,7 +147,8 @@ export default {
           message: "密码不一致",
         },
       ],
-      captchaRules: [{validate: (val) => !!val, message: "请输入验证码"}],
+      // captchaRules: [{validate: (val) => !!val, message: "请输入验证码"}],
+      avatarRules: [{validate: (val) => !!val, message: "请输入头像地址"}],
       introductionRules: [
         {
           validate: (val) => val.length <= 1000,
@@ -151,6 +160,7 @@ export default {
         nickName: "",
         password: "",
         confirmPassword: "",
+        avatar: "",
         introduction: "",
         captcha: "",
       },
@@ -166,15 +176,14 @@ export default {
     submit() {
       this.$refs.form.validate().then(async (result) => {
         if (result) {
-          const res = await this.$axios.post("/register", this.validateForm);
-          if (res.data) {
-            localStorage.setItem("user", JSON.stringify(res.data));
-            this.$toast.success("注册成功");
-            location.reload();
+          const res = await register(this.validateForm)
+          if (res.code === 200) {
+            this.$toast.success(res.msg);
             this.$emit("toggle", false);
+            this.$emit("toLogin", true);
           } else {
             this.$toast.error(res.msg);
-            await this.getCaptcha();
+            // await this.getCaptcha();
           }
         }
       });
@@ -186,6 +195,7 @@ export default {
         nickName: "",
         password: "",
         confirmPassword: "",
+        avatar: "",
         introduction: "",
         captcha: "",
       };
