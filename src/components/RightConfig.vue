@@ -2,11 +2,11 @@
   <div class="right-config">
     <mu-card class="slider-card">
       <mu-avatar class="avatar" size="100">
-        <img v-lazy="avatar" alt="">
+        <img :src="userInfo?userInfo.avatar:avatarBg" alt="头像">
       </mu-avatar>
-      <div class="title">liugaorong</div>
-      <div class="desc">专注于web前端开发</div>
-      <div class="tags">
+      <div class="title">{{userInfo?userInfo.nickName:'欢迎您，请先登录'}}</div>
+      <div class="desc">{{userInfo?.introduction}}</div>
+      <div class="tags" v-if="!!userInfo">
         <mu-chip class="chip">vue</mu-chip>
         <mu-chip class="chip">react</mu-chip>
         <mu-chip class="chip">nodejs</mu-chip>
@@ -14,21 +14,27 @@
       <div class="friend-link-box">
         <p class="friend-link-title">友情链接</p>
         <div class="friend-links">
-          <mu-button fab small>
-            <mu-avatar size="40">
-              <img src="https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4">
-            </mu-avatar>
-          </mu-button>
-          <mu-button fab small>
-            <mu-avatar size="40">
-              <img src="https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4">
-            </mu-avatar>
-          </mu-button>
-          <mu-button fab small>
-            <mu-avatar size="40">
-              <img src="https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4">
-            </mu-avatar>
-          </mu-button>
+          <a href="https://github.com" target="_blank">
+            <mu-button fab small>
+              <mu-avatar size="40">
+                <img src="../assets/github.png">
+              </mu-avatar>
+            </mu-button>
+          </a>
+          <a href="https://segmentfault.com" target="_blank">
+            <mu-button fab small>
+              <mu-avatar size="40">
+                <img src="../assets/sf.jpeg">
+              </mu-avatar>
+            </mu-button>
+          </a>
+          <a href="https://www.zhihu.com" target="_blank">
+            <mu-button fab small>
+              <mu-avatar size="40">
+                <img src="../assets/zhihu.jpg">
+              </mu-avatar>
+            </mu-button>
+          </a>
         </div>
       </div>
     </mu-card>
@@ -41,7 +47,7 @@
         </mu-carousel-item>
       </mu-carousel>
     </mu-card>
-    <mu-card class="slider-card">
+    <mu-card class="slider-card" v-if="!!userInfo">
       <div class="friend-link-box">
         <p class="friend-link-title">电影推荐</p>
         <div class="friend-links">
@@ -72,6 +78,12 @@
 
 <script>
 export default {
+  data() {
+    return {
+      userInfo: JSON.parse(localStorage.getItem('userInfo')),
+      avatarBg: require('@/assets/avatarBg.png'),
+    }
+  }
 }
 </script>
 

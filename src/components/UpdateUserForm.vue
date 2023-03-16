@@ -26,7 +26,7 @@
         </mu-form-item>
 
         <mu-form-item
-          label="登录密码"
+          label="新密码"
           prop="password"
           :rules="passwordRules"
         >
@@ -51,6 +51,13 @@
           ></mu-text-field>
         </mu-form-item>
 
+        <mu-form-item label="头像" prop="avatar">
+          <mu-text-field
+            v-model.trim="validateForm.avatar"
+            prop="avatar"
+          ></mu-text-field>
+        </mu-form-item>
+
         <mu-form-item
           label="个人简介"
           prop="introduction"
@@ -66,12 +73,13 @@
         </mu-form-item>
       </mu-form>
       <mu-button slot="actions" flat small @click="clear">取消</mu-button>
-      <mu-button slot="actions" flat small color="primary" @click="submit">注册</mu-button>
+      <mu-button slot="actions" flat small color="primary" @click="submit">修改</mu-button>
     </mu-dialog>
   </div>
 </template>
 <script>
 
+import {updateUserInfo} from "@/api/user";
 import {Icon} from "@/utils";
 
 export default {
@@ -80,7 +88,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    userinfo: {
+    userInfo: {
       type: Object,
       default: null,
     }
@@ -112,7 +120,6 @@ export default {
           message: "密码不一致",
         },
       ],
-      captchaRules: [{validate: (val) => !!val, message: "请输入验证码"}],
       introductionRules: [
         {
           validate: (val) => val.length <= 1000,
@@ -124,37 +131,28 @@ export default {
         nickName: "",
         password: "",
         confirmPassword: "",
+        avatar: "",
         introduction: "",
       },
     };
   },
   mounted() {
-    this.userInfo = {
-      avatar: '',
-      nickName: 'liugaorong',
-      email: '1652276785@qq.com',
-      introduction: '应届生一枚',
+    this.validateForm = {
+      ...this.validateForm,
+      ...this.userInfo,
+      password: "",
+      confirmPassword: "",
     }
   },
   methods: {
-    async getCaptcha() {
-      const res = await this.$axios.get("/captcha");
-      if (res) {
-        this.captcha = res.data;
-      }
-    },
     submit() {
       this.$refs.form.validate().then(async (result) => {
         if (result) {
-          const res = await this.$axios.post("/register", this.validateForm);
-          if (res.data) {
-            localStorage.setItem("user", JSON.stringify(res.data));
-            this.$toast.success("注册成功");
-            location.reload();
+          const res = await updateUserInfo(this.validateForm)
+          if (res.code === 200) {
+            this.$toast.success(res.msg);
+            localStorage.setItem('userInfo', JSON.stringify(res.userInfo))
             this.$emit("toggle", false);
-          } else {
-            this.$toast.error(res.msg);
-            await this.getCaptcha();
           }
         }
       });
@@ -162,22 +160,12 @@ export default {
     clear() {
       this.$refs.form.clear();
       this.validateForm = {
-        nickName: "",
+        ...this.validateForm,
+        ...this.userInfo,
         password: "",
         confirmPassword: "",
-        introduction: "",
       };
       this.$emit("toggle", false);
-    },
-  },
-  watch: {
-    userInfo(val){
-      console.log(val)
-      this.validateForm={
-        ...val,
-        password: '',
-        confirmPassword: '',
-      }
     },
   },
 };

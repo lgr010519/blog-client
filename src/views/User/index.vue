@@ -6,11 +6,10 @@
       </mu-button>
       <mu-avatar class="avatar" size="100">
         <img v-lazy="userInfo.avatar">
-        <input type="file" class="file" accept="image/*" @change="uploadFile">
       </mu-avatar>
       <div class="title">{{userInfo.nickName}}</div>
       <div class="email">{{userInfo.email}}</div>
-      <div class="desc">{{userInfo.introduction}}</div>
+      <div class="desc">{{userInfo.introduction || '此人很懒，什么也没留下。'}}</div>
     </mu-card>
     <UpdateUserForm :userInfo="userInfo" :open="openUpdateModal" @toggle="toggleUpdateModal"></UpdateUserForm>
     <div class="right">
@@ -86,12 +85,7 @@ export default {
         views: 5,
         _id: "6011325cc4ae0128013d3210",
       }],
-      userInfo: {
-        avatar: '',
-        nickName: 'liugaorong',
-        email: '1652276785@qq.com',
-        introduction: '应届生一枚',
-      }
+      userInfo: JSON.parse(localStorage.getItem('userInfo')),
     }
   },
   mounted() {

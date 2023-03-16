@@ -17,19 +17,12 @@
           <mu-text-field v-model.trim="validateForm.password" type="password" prop="password"></mu-text-field>
         </mu-form-item>
 
-        <mu-form-item label="验证码" prop="captcha">
+        <mu-form-item label="验证码" prop="captcha" :rules="captchaRules">
           <mu-text-field placeholder="区分大小写" v-model.trim="validateForm.captcha" prop="captcha">
             <div @click="getCaptcha" class="captcha" v-html="captcha"></div>
           </mu-text-field>
         </mu-form-item>
       </mu-form>
-
-      <mu-button slot="actions" flat href="/api/v1/web/github/login">
-        <mu-avatar style="margin-right:10px" size="30">
-          <img :src="Icon.github" alt />
-        </mu-avatar>
-        Github
-      </mu-button>
 
       <mu-button slot="actions" flat small @click="clear">取消</mu-button>
       <mu-button slot="actions" flat small color="primary" @click="submit">登录</mu-button>
@@ -38,7 +31,7 @@
 </template>
 <script>
 import { Icon } from "@/utils";
-import {login} from "@/api/loginRegister";
+import {login, getCaptcha} from "@/api/loginRegister";
 
 export default {
   props: {
@@ -56,19 +49,28 @@ export default {
   data() {
     return {
       captcha: "",
-      emailRules: [{ validate: val => !!val, message: "邮箱必填！" }],
-      passwordRules: [{ validate: val => !!val, message: "密码必填！" }],
-      // captchaRules: [{ validate: val => !!val, message: "请输入验证码" }],
+      captchaText: "",
+      emailRules: [{ validate: val => !!val, message: "请输入邮箱" }],
+      passwordRules: [{ validate: val => !!val, message: "请输入密码" }],
+      captchaRules: [
+        { validate: val => !!val, message: "请输入验证码" },
+        { validate: val => val === this.captchaText, message: "验证码错误" },
+      ],
       validateForm: {
         email: "",
-        password: ""
+        password: "",
+        captcha: "",
       },
       Icon
     };
   },
   methods: {
     async getCaptcha() {
-
+      const res = await getCaptcha()
+      if (res.code === 200){
+        this.captcha = res.data.data
+        this.captchaText = res.data.text
+      }
     },
     submit() {
       this.$refs.form.validate().then(async result => {
@@ -78,10 +80,14 @@ export default {
             this.$toast.success(res.msg);
             this.$emit("toggle", false);
             localStorage.setItem('userInfo',JSON.stringify(res.data.userInfo))
+            localStorage.setItem('token',res.data.token)
             location.reload();
           }else {
             this.$toast.error(res.msg);
+            await this.getCaptcha()
           }
+        }else {
+          await this.getCaptcha()
         }
       });
     },

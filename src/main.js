@@ -127,7 +127,7 @@ Vue.prototype.theme = theme
 
 Vue.prototype.avatar = "https://avatars.githubusercontent.com/u/100412666?s=400&u=3c51eadc7ed230e91353fc3362735fdab5327dd8&v=4"
 
-new Vue({
+export default new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')

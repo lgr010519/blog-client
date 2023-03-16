@@ -5,7 +5,7 @@
 <!--      <span style="cursor: pointer">liugaorong</span>-->
 <!--       头像-->
       <mu-avatar slot="left" :size="40" class="header-avatar">
-        <img :src="userInfo?.avatar" title="liugaorong" alt="liugaorong">
+        <img :src="userInfo?userInfo.avatar:avatarBg" alt="avatar">
       </mu-avatar>
 <!--       tab栏-->
       <mu-button @click="go(item)" class="tab" flat slot="right" v-for="(item,index) in info.menu" :key="item.name" :color="lightIndex===index?'#2195f2':''">
@@ -79,7 +79,7 @@
         </mu-slide-left-transition>
       </div>
       <div class="tool-row">
-        <mu-tooltip placement="right" content="登录/注册/搜索">
+        <mu-tooltip placement="right" :content="userInfo?'搜索':'登录/注册/搜索'">
           <mu-button
             @click="showToolBtn = !showToolBtn"
             fab
@@ -145,38 +145,49 @@
 </template>
 
 <script>
-const menus = [
-  {
-    name: "首页",
-    router: "home",
-    icon: "home",
-  },
-  {
-    name: "文章",
-    router: "articles",
-    icon: "note_add",
-  },
-  {
-    name: "归档",
-    router: "archives",
-    icon: "drafts",
-  },
-  {
-    name: "分类",
-    router: "categories",
-    icon: "dns",
-  },
-  {
-    name: "标签",
-    router: "tags",
-    icon: "loyalty",
-  },
-  {
-    name: "关于",
-    router: "about",
-    icon: "perm_identity",
-  },
-];
+const menus = (userInfo) => (userInfo ? [
+    {
+        name: "首页",
+        router: "home",
+        icon: "home",
+    },
+    {
+        name: "文章",
+        router: "articles",
+        icon: "note_add",
+    },
+    {
+        name: "归档",
+        router: "archives",
+        icon: "drafts",
+    },
+    {
+        name: "分类",
+        router: "categories",
+        icon: "dns",
+    },
+    {
+        name: "标签",
+        router: "tags",
+        icon: "loyalty",
+    },
+    {
+        name: "关于",
+        router: "about",
+        icon: "perm_identity",
+    },
+] : [
+    {
+        name: "首页",
+        router: "home",
+        icon: "home",
+    },
+    {
+      name: "文章",
+      router: "articles",
+      icon: "note_add",
+    },
+])
 import RegisterForm from "@/components/RegisterForm";
 import LoginForm from "@/components/LoginForm";
 import SearchForm from "@/components/SearchForm";
@@ -216,26 +227,25 @@ export default {
       triggerUser: null,
       trigger: null,
       triggerTheme: null,
-
       info: {
-        menu: menus,
+        menu: menus(this.userInfo),
         login: true, // 是否开启登录
         openSearch: true,// 是否开启搜索
         register: true,// 是否开启注册
       },
-      showToolBtn: false, // 点击切换显示操作按钮
+      showToolBtn: true, // 点击切换显示操作按钮
       userInfo: JSON.parse(localStorage.getItem("userInfo")), // 用户信息
-
       openSearchModal: false, // 打开搜索弹框
       openLoginModal: false, // 打开登录弹框
       openRegisterModal: false, // 打开注册弹框
-
       showBackTop:false,
-
       myTheme: '',
+      avatarBg: require('@/assets/avatarBg.png'),
     }
   },
   mounted () {
+    this.showToolBtn = !this.userInfo
+    this.info.menu = menus(this.userInfo)
     this.triggerTheme = this.$refs.theme.$el;
     this.triggerUser = this.$refs.user.$el;
     window.onscroll=()=>{
@@ -292,9 +302,10 @@ export default {
     async logout(){
       const res = await logout()
         if (res.code === 200){
-            this.$toast.success(res.msg)
-            localStorage.removeItem('userInfo')
-            location.reload()
+          this.$toast.success(res.msg)
+          localStorage.removeItem('userInfo')
+          await this.$router.push('/home')
+          location.reload()
         }else {
             this.$toast.error('退出登录失败，请重试')
         }

@@ -9,7 +9,7 @@
       :overlay-close="false"
       :open.sync="open"
     >
-      <mu-form ref="form" :model="validateForm" label-width="90" label-position="right">
+      <mu-form ref="form" :model="validateForm" label-width="100" label-position="right">
         <mu-form-item label="邮箱(必填)" prop="email" :rules="emailRules">
           <mu-text-field
             v-model.trim="validateForm.email"
@@ -50,17 +50,7 @@
           ></mu-text-field>
         </mu-form-item>
 
-        <mu-form-item label="验证码" prop="captcha">
-          <mu-text-field
-            placeholder="区分大小写"
-            v-model.trim="validateForm.captcha"
-            prop="captcha"
-          >
-            <div @click="getCaptcha" class="captcha" v-html="captcha"></div>
-          </mu-text-field>
-        </mu-form-item>
-
-        <mu-form-item label="头像" prop="avatar" :rules="avatarRules">
+        <mu-form-item label="头像(必填)" prop="avatar" :rules="avatarRules">
           <mu-text-field
             v-model.trim="validateForm.avatar"
             prop="avatar"
@@ -80,13 +70,17 @@
             full-width
           ></mu-text-field>
         </mu-form-item>
+
+        <mu-form-item label="验证码(必填)" prop="captcha" :rules="captchaRules">
+          <mu-text-field
+            placeholder="区分大小写"
+            v-model.trim="validateForm.captcha"
+            prop="captcha"
+          >
+            <div @click="getCaptcha" class="captcha" v-html="captcha"></div>
+          </mu-text-field>
+        </mu-form-item>
       </mu-form>
-      <mu-button slot="actions" flat href="/api/v1/web/github/login">
-        <mu-avatar style="margin-right: 10px" size="30">
-          <img :src="Icon.github" />
-        </mu-avatar>
-        Github
-      </mu-button>
       <mu-button slot="actions" flat small @click="clear">取消</mu-button>
       <mu-button slot="actions" flat small color="primary" @click="submit">注册</mu-button>
     </mu-dialog>
@@ -94,7 +88,7 @@
 </template>
 <script>
 import {Icon} from "@/utils";
-import {register} from "@/api/loginRegister";
+import {register, getCaptcha} from "@/api/loginRegister";
 
 export default {
   props: {
@@ -114,6 +108,7 @@ export default {
       Icon,
       visibility: false,
       captcha: "",
+      captchaText: "",
       emailRules: [
         {validate: (val) => !!val, message: "邮箱不能为空"},
         {
@@ -121,12 +116,12 @@ export default {
             let reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
             return reg.test(val);
           },
-          message: "邮箱格式错误！",
+          message: "邮箱格式不正确",
         },
       ],
       nickNameRules: [
         {validate: (val) => !!val, message: "昵称不能为空"},
-        {validate: (val) => val.length <= 20, message: "昵称不能超过20个字符"},
+        {validate: (val) => val.length <= 20 && val.length >= 5, message: "昵称在5~20个字符之间"},
       ],
       passwordRules: [
         {validate: (val) => !!val, message: "密码不能为空"},
@@ -147,7 +142,10 @@ export default {
           message: "密码不一致",
         },
       ],
-      // captchaRules: [{validate: (val) => !!val, message: "请输入验证码"}],
+      captchaRules: [
+        {validate: (val) => !!val, message: "请输入验证码"},
+        {validate: (val) => val === this.captchaText, message: "验证码错误"},
+      ],
       avatarRules: [{validate: (val) => !!val, message: "请输入头像地址"}],
       introductionRules: [
         {
@@ -168,9 +166,10 @@ export default {
   },
   methods: {
     async getCaptcha() {
-      const res = await this.$axios.get("/captcha");
-      if (res) {
-        this.captcha = res.data;
+      const res = await getCaptcha()
+      if (res.code === 200){
+        this.captcha = res.data.data
+        this.captchaText = res.data.text
       }
     },
     submit() {
@@ -183,8 +182,10 @@ export default {
             this.$emit("toLogin", true);
           } else {
             this.$toast.error(res.msg);
-            // await this.getCaptcha();
+            await this.getCaptcha()
           }
+        }else {
+          await this.getCaptcha()
         }
       });
     },

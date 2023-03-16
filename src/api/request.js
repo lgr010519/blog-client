@@ -1,4 +1,5 @@
 import axios from "axios";
+import Vue from '@/main'
 
 export const request = (config) => {
     const http = axios.create({
@@ -26,7 +27,9 @@ export const request = (config) => {
     }, (error) => {
         console.log('responseError', error.response)
         if (error.response && error.response.status === 401) {
-            this.$toast.error("登录状态过期，请重新登录");
+            Vue.$toast.error("登录状态过期，请重新登录");
+            localStorage.removeItem('userInfo')
+            Vue.$router.push('/home')
         }
     })
 
