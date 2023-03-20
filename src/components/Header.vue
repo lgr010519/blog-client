@@ -1,32 +1,16 @@
 <template>
   <div class="header">
     <mu-appbar :color="background">
-<!--       昵称-->
-<!--      <span style="cursor: pointer">liugaorong</span>-->
-<!--       头像-->
       <mu-avatar slot="left" :size="40" class="header-avatar">
         <img :src="userInfo?userInfo.avatar:avatarBg" alt="avatar">
       </mu-avatar>
-<!--       tab栏-->
-      <mu-button @click="go(item)" class="tab" flat slot="right" v-for="(item,index) in info.menu" :key="item.name" :color="lightIndex===index?'#2195f2':''">
+      <!--       tab栏-->
+      <mu-button @click="go(item)" class="tab" flat slot="right" v-for="(item,index) in info.menu" :key="item.name"
+                 :color="lightIndex===index?'#2195f2':''">
         <mu-icon size="16" :value="item.icon"></mu-icon>
         {{item.name}}
       </mu-button>
-<!--      移动端菜单-->
-      <mu-button class="mobileMenu" slot="left" icon @click="toggleMobileMenu(true)">
-        <mu-icon value="menu"></mu-icon>
-      </mu-button>
-      <mu-bottom-sheet class="mobileMenu" :open.sync="openMobileMenu">
-        <mu-list @item-click="toggleMobileMenu(false)">
-          <mu-list-item @click="go(item)" button v-for="(item,index) in info.menu" :key="item.name">
-            <mu-list-item-action>
-              <mu-icon :value="item.icon" :color="lightIndex===index?'#2195f2':''"></mu-icon>
-            </mu-list-item-action>
-            <mu-list-item-title :style="{color:lightIndex===index?'#2195f2':''}">{{ item.name }}</mu-list-item-title>
-          </mu-list-item>
-        </mu-list>
-      </mu-bottom-sheet>
-<!--       主题切换-->
+      <!--       主题切换-->
       <mu-button flat ref="theme" slot="right" @click="openTheme = !openTheme">
         <mu-icon value="color_lens"></mu-icon>
       </mu-button>
@@ -44,7 +28,7 @@
           </mu-list-item>
         </mu-list>
       </mu-popover>
-<!--       用户操作-->
+      <!--       用户操作-->
       <mu-button flat ref="user" slot="right" @click="openUser = !openUser" v-if="userInfo">
         <span>{{userInfo?.nickName}}</span>
         <mu-icon value="expand_more"></mu-icon>
@@ -74,12 +58,13 @@
             "
             fab
             color="primary"
-          >登录</mu-button
+          >登录
+          </mu-button
           >
         </mu-slide-left-transition>
       </div>
       <div class="tool-row">
-        <mu-tooltip placement="right" :content="userInfo?'搜索':'登录/注册/搜索'">
+        <mu-tooltip placement="right" :content="userInfo?'搜索 (Ctrl + F)':'登录 / 注册 / 搜索 (Ctrl + F)'">
           <mu-button
             @click="showToolBtn = !showToolBtn"
             fab
@@ -99,7 +84,8 @@
             "
             fab
             color="error"
-          >搜索</mu-button
+          >搜索
+          </mu-button
           >
         </mu-slide-left-transition>
       </div>
@@ -115,7 +101,8 @@
             "
             fab
             color="warning"
-          >注册</mu-button
+          >注册
+          </mu-button
           >
         </mu-slide-left-transition>
       </div>
@@ -145,219 +132,218 @@
 </template>
 
 <script>
-const menus = (userInfo) => (userInfo ? [
-    {
-        name: "首页",
-        router: "home",
-        icon: "home",
-    },
-    {
-        name: "文章",
-        router: "articles",
-        icon: "note_add",
-    },
-    {
-        name: "归档",
-        router: "archives",
-        icon: "drafts",
-    },
-    {
-        name: "分类",
-        router: "categories",
-        icon: "dns",
-    },
-    {
-        name: "标签",
-        router: "tags",
-        icon: "loyalty",
-    },
-    {
-        name: "关于",
-        router: "about",
-        icon: "perm_identity",
-    },
-] : [
-    {
-        name: "首页",
-        router: "home",
-        icon: "home",
-    },
-    {
-      name: "文章",
-      router: "articles",
-      icon: "note_add",
-    },
-])
-import RegisterForm from "@/components/RegisterForm";
-import LoginForm from "@/components/LoginForm";
-import SearchForm from "@/components/SearchForm";
-import {logout} from "@/api/loginRegister";
+    const menus = [
+        {
+            name: "首页",
+            router: "home",
+            icon: "home",
+        },
+        {
+            name: "文章",
+            router: "articles",
+            icon: "note_add",
+        },
+        {
+            name: "归档",
+            router: "archives",
+            icon: "drafts",
+        },
+        {
+            name: "分类",
+            router: "categories",
+            icon: "dns",
+        },
+        {
+            name: "标签",
+            router: "tags",
+            icon: "loyalty",
+        },
+        {
+            name: "关于",
+            router: "about",
+            icon: "perm_identity",
+        },
+    ]
+    import RegisterForm from "@/components/RegisterForm";
+    import LoginForm from "@/components/LoginForm";
+    import SearchForm from "@/components/SearchForm";
+    import {logout} from "@/api/loginRegister";
 
-export default {
-  components:{
-    RegisterForm,
-    LoginForm,
-    SearchForm,
-  },
-  props:{
-    // 选中tab高亮
-    lightIndex:{
-      type: Number,
-      default: 0,
-    },
-    // 背景色
-    background:{
-      type: String,
-    }
-  },
-  computed: {
-    isShowAction() {
-      return !(
-        !this.info.openSearch &&
-        !this.info.register &&
-        !this.info.login
-      );
-    },
-  },
-  data(){
-    return {
-      openUser: false,
-      openTheme: false,
-      openMobileMenu: false,
-      triggerUser: null,
-      trigger: null,
-      triggerTheme: null,
-      info: {
-        menu: menus(this.userInfo),
-        login: true, // 是否开启登录
-        openSearch: true,// 是否开启搜索
-        register: true,// 是否开启注册
-      },
-      showToolBtn: true, // 点击切换显示操作按钮
-      userInfo: JSON.parse(localStorage.getItem("userInfo")), // 用户信息
-      openSearchModal: false, // 打开搜索弹框
-      openLoginModal: false, // 打开登录弹框
-      openRegisterModal: false, // 打开注册弹框
-      showBackTop:false,
-      myTheme: '',
-      avatarBg: require('@/assets/avatarBg.png'),
-    }
-  },
-  mounted () {
-    this.showToolBtn = !this.userInfo
-    this.info.menu = menus(this.userInfo)
-    this.triggerTheme = this.$refs.theme.$el;
-    this.triggerUser = this.$refs.user.$el;
-    window.onscroll=()=>{
-      if (document.documentElement.scrollTop + document.body.scrollTop > 100){
-        this.showBackTop = true
-      }else{
-        this.showBackTop = false
-      }
-    }
-
-    const hours = new Date().getHours()
-    let defaultTheme = ''
-    if (hours >= 8 && hours <= 18){
-      defaultTheme = 'selfLight'
-    }else {
-      defaultTheme = 'selfDark'
-    }
-    this.myTheme = localStorage.getItem('theme') || defaultTheme
-  },
-  methods:{
-    // 切换移动端
-    toggleMobileMenu(bool){
-      this.openMobileMenu = bool
-    },
-    // 路由跳转
-    go(item){
-      // 点击相同路由不跳转
-      if(this.$route.name === item.router) return
-      this.$router.push({
-        name: item.router
-      })
-    },
-    toggleRegisterModal(bool) {
-      this.openRegisterModal = bool;
-    },
-    toggleLoginModal(bool) {
-      this.openLoginModal = bool;
-    },
-    toggleSearchModal(bool) {
-      this.openSearchModal = bool;
-    },
-    scrollTop(){
-      document.body.scrollIntoView({
-        block:'start',
-        behavior:'smooth'
-      })
-    },
-    toggleTheme(myTheme){
-      this.theme.use(myTheme)
-      this.myTheme = myTheme
-      localStorage.setItem('theme',myTheme)
-      this.openTheme = false
-    },
-    async logout(){
-      const res = await logout()
-        if (res.code === 200){
-          this.$toast.success(res.msg)
-          localStorage.removeItem('userInfo')
-          await this.$router.push('/home')
-          location.reload()
-        }else {
-            this.$toast.error('退出登录失败，请重试')
+    export default {
+        components: {
+            RegisterForm,
+            LoginForm,
+            SearchForm,
+        },
+        props: {
+            // 选中tab高亮
+            lightIndex: {
+                type: Number,
+                default: 0,
+            },
+            // 背景色
+            background: {
+                type: String,
+            }
+        },
+        computed: {
+            isShowAction() {
+                return !(
+                    !this.info.openSearch &&
+                    !this.info.register &&
+                    !this.info.login
+                );
+            },
+        },
+        data() {
+            return {
+                openUser: false,
+                openTheme: false,
+                openMobileMenu: false,
+                triggerUser: null,
+                trigger: null,
+                triggerTheme: null,
+                info: {
+                    menu: menus,
+                    login: true, // 是否开启登录
+                    openSearch: true,// 是否开启搜索
+                    register: true,// 是否开启注册
+                },
+                showToolBtn: true, // 点击切换显示操作按钮
+                userInfo: JSON.parse(localStorage.getItem("userInfo")), // 用户信息
+                openSearchModal: false, // 打开搜索弹框
+                openLoginModal: false, // 打开登录弹框
+                openRegisterModal: false, // 打开注册弹框
+                showBackTop: false,
+                myTheme: '',
+                avatarBg: require('@/assets/avatarBg.png'),
+            }
+        },
+        mounted() {
+            this.showToolBtn = !this.userInfo
+            this.triggerTheme = this.$refs.theme.$el;
+            this.triggerUser = this.$refs.user.$el;
+            window.onscroll = () => {
+                this.showBackTop = document.documentElement.scrollTop + document.body.scrollTop > 100;
+            }
+            window.onkeydown = (event) => {
+                if (event.ctrlKey && event.key === 'f') {
+                    event.preventDefault()
+                    this.openSearchModal = true
+                }
+            }
+            const hours = new Date().getHours()
+            let defaultTheme = ''
+            if (hours >= 8 && hours <= 18) {
+                defaultTheme = 'selfLight'
+            } else {
+                defaultTheme = 'selfDark'
+            }
+            this.myTheme = localStorage.getItem('theme') || defaultTheme
+        },
+        methods: {
+            // 路由跳转
+            go(item) {
+                // 点击相同路由不跳转
+                if (this.$route.name === item.router) return
+                this.$router.push({
+                    name: item.router
+                })
+            },
+            toggleRegisterModal(bool) {
+                this.openRegisterModal = bool;
+            },
+            toggleLoginModal(bool) {
+                this.openLoginModal = bool;
+            },
+            toggleSearchModal(bool) {
+                this.openSearchModal = bool;
+            },
+            scrollTop() {
+                document.body.scrollIntoView({
+                    block: 'start',
+                    behavior: 'smooth'
+                })
+            },
+            toggleTheme(myTheme) {
+                this.theme.use(myTheme)
+                this.myTheme = myTheme
+                localStorage.setItem('theme', myTheme)
+                this.openTheme = false
+            },
+            async logout() {
+                const res = await logout()
+                if (res.code === 200) {
+                    this.$toast.success(res.msg)
+                    localStorage.removeItem('userInfo')
+                    if (this.$route.path !== '/home') {
+                        await this.$router.push('/home')
+                    }
+                    location.reload()
+                } else {
+                    this.$toast.error('退出登录失败，请重试')
+                }
+            },
         }
-    },
-  }
-}
+    }
 </script>
 
 <style lang="less" scoped>
-.header {
-  position: fixed;
-  z-index: 1501;
-  width: 100%;
-  top: 0;
-  .header-avatar {
-    margin-left: 20px;
-    cursor: pointer;
-    transform: scale(1.0);
-    transition: all 0.2s;
-    &:hover {
-      transform: scale(1.3);
+  .header {
+    position: fixed;
+    z-index: 1501;
+    width: 100%;
+    top: 0;
+
+    .header-avatar {
+      margin-left: 20px;
+      cursor: pointer;
+      transform: scale(1.0);
       transition: all 0.2s;
+
+      &:hover {
+        transform: scale(1.3);
+        transition: all 0.2s;
+      }
     }
   }
-}
-.tool{
-  position: fixed;
-  left: 0;
-  bottom: 2.66667rem;
-  .tool-row{
-    margin-top: 20px;
-    height: 56px;
-    .search-fab{
-      margin-left: -28px;
-      margin-right: 20px;
+
+  .tool {
+    position: fixed;
+    left: 0;
+    bottom: 2.66667rem;
+
+    .tool-row {
+      margin-top: 20px;
+      height: 56px;
+
+      .search-fab {
+        margin-left: -28px;
+        margin-right: 20px;
+      }
     }
   }
-}
-.back-top{
-  position: fixed;
-  right: 0.266667rem;
-  bottom: 0.4rem;
-  background: #595959;
-}
-@media screen and (max-width: 750px){
-  .tab{
-    display: none;
+
+  .back-top {
+    position: fixed;
+    right: 0.266667rem;
+    bottom: 0.4rem;
+    background: #595959;
   }
-}
-@media screen and (min-width: 750px){
-  .mobileMenu{
-    display: none;
+
+  @media screen and (max-width: 750px) {
+    .tab {
+      display: none;
+    }
   }
-}
+
+  @media screen and (min-width: 750px) {
+    .mobileMenu {
+      display: none;
+    }
+  }
+
+  /deep/ .mu-button {
+    text-transform: lowercase;
+  }
 </style>

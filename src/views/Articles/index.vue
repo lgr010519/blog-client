@@ -106,7 +106,7 @@
                     pageSize: this.pageSize,
                     status: 1, // 文章为启用状态
                     publishStatus: 1, // 文章为发布状态
-                }).then(()=>{
+                }).then(() => {
                     document.body.scrollIntoView({
                         block: 'start',
                         behavior: 'smooth'
@@ -237,5 +237,9 @@
     .right {
       display: none;
     }
+  }
+
+  /deep/ .mu-button-wrapper {
+    text-transform: lowercase;
   }
 </style>

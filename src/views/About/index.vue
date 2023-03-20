@@ -9,7 +9,7 @@
       style="position: fixed; height: 100%; margin-top: 0"
     >
       <mu-carousel-item v-for="item in info.imgs" :key="item._id">
-        <img :src="item.imgUrl" />
+        <img :src="item.imgUrl"/>
       </mu-carousel-item>
     </mu-carousel>
 
@@ -17,7 +17,7 @@
       <mu-card class="card">
         <mu-card-header class="card-header">
           <mu-paper class="avatar-box" circle :z-depth="5">
-            <img class="avatar" v-lazy="avatar" />
+            <img class="avatar" v-lazy="avatar"/>
           </mu-paper>
         </mu-card-header>
 
@@ -32,13 +32,15 @@
             :color="item.color"
             @delete="remove(index)"
             delete
-          >{{ item.name }}</mu-chip
+          >{{ item.name }}
+          </mu-chip
           >
           <mu-button
             color="primary"
             v-if="info.tags && info.tags.length === 0"
             @click="reset"
-          >reset</mu-button
+          >reset
+          </mu-button
           >
         </div>
       </mu-card>
@@ -46,147 +48,164 @@
   </div>
 </template>
 <script>
-import { randomColor } from "@/utils";
+    import {randomColor} from "@/utils";
+    import {getTags} from "@/api/tags";
+    import Header from "@/components/Header";
+    import Footer from "@/components/Footer";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+    export default {
+        name: "about",
+        components: {
+            Header,
+            Footer,
+        },
+        data() {
+            return {
+                info: {
+                    imgs: [
+                        {
+                            _id: 1,
+                            imgUrl: "http://www.nevergiveupt.top/index.jpg",
+                        },
+                        {
+                            _id: 2,
+                            imgUrl: "http://www.nevergiveupt.top/tags.jpg",
+                        },
+                        {
+                            _id: 3,
+                            imgUrl: "http://www.nevergiveupt.top/archive.jpg",
+                        },
+                    ],
+                    intro:
+                        "熟悉Vue、React、Angular前端框架，熟悉小程序开发（Taro、Remax、MpVue、Wepy、 云开发）。熟悉NodeJs、Koa，Egg等后端知识。具有良好的沟通能力、工作协调能力、不断学习新技术、熟练前端技术、热衷于前端开发。",
+                    tags: [],
+                },
+            };
+        },
+        mounted() {
+            this.getTags()
+        },
 
-export default {
-  name: "about",
-  components: {
-    Header,
-    Footer,
-  },
-  data() {
-    return {
-      info: {
-        imgs: [
-          {
-            _id: 1,
-            imgUrl: "http://www.nevergiveupt.top/index.jpg",
-          },
-          {
-            _id: 2,
-            imgUrl: "http://www.nevergiveupt.top/tags.jpg",
-          },
-          {
-            _id: 3,
-            imgUrl: "http://www.nevergiveupt.top/archive.jpg",
-          },
-        ],
-        intro:
-          "熟悉Vue、React、Angular前端框架，熟悉小程序开发（Taro、Remax、MpVue、Wepy、 云开发）。熟悉NodeJs、Koa，Egg等后端知识。具有良好的沟通能力、工作协调能力、不断学习新技术、熟练前端技术、热衷于前端开发。",
-        tags: [
-          {
-            name: "Vue",
-            color: randomColor(),
-          },
-          {
-            name: "React",
-            color: randomColor(),
-          },
-          {
-            name: "Node.js",
-            color: randomColor(),
-          },
-        ],
-      },
+        methods: {
+            remove(index) {
+                this.info.tags.splice(index, 1);
+            },
+            reset() {
+                this.info.tags = [
+                    {
+                        name: "Vue",
+                        color: randomColor(),
+                    },
+                    {
+                        name: "React",
+                        color: randomColor(),
+                    },
+                    {
+                        name: "Node.js",
+                        color: randomColor(),
+                    },
+                ];
+            },
+            async getTags() {
+                const res = await getTags({
+                    page: 1,
+                    pageSize: 9999
+                })
+                if (res.code === 200) {
+                    const handleRes = res.data.list
+                    handleRes.map(item => {
+                        item.color = randomColor()
+                    })
+                    this.info.tags = handleRes
+                }
+            }
+        },
     };
-  },
-  mounted() {},
-
-  methods: {
-    remove(index) {
-      this.info.tags.splice(index, 1);
-    },
-    reset() {
-      this.info.tags = [
-        {
-          name: "Vue",
-          color: randomColor(),
-        },
-        {
-          name: "React",
-          color: randomColor(),
-        },
-        {
-          name: "Node.js",
-          color: randomColor(),
-        },
-      ];
-    },
-  },
-};
 </script>
 <style lang="less" scoped>
-.content {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  /deep/ .mu-card-header {
-    display: flex;
-    justify-content: flex-end;
-    height: 1.33333rem;
-  }
-  .avatar-box {
-    width: 2.66667rem;
-    height: 2.66667rem;
+  .content {
+    width: 100%;
     position: absolute;
-    top: -1.33333rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1;
-    .avatar {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    /deep/ .mu-card-header {
+      display: flex;
+      justify-content: flex-end;
+      height: 1.33333rem;
     }
-  }
-}
-.tags {
-  padding: 0.42667rem;
-  .tag {
-    margin-bottom: 0.42667rem;
-    margin-right: 0.42667rem;
-  }
-}
-.mu-carousel {
-  height: 5.33333rem;
-  margin-top: 0.53333rem;
-}
-.mu-carousel-item > img {
-  height: 100%;
-}
-.card {
-  max-width: 10rem;
-  width: 10rem;
-  margin: 0 auto;
-}
-@media screen and (min-width: 750px){
-  .content{
-    padding-top: 64px;
-    .card{
-      margin-top: 100px;
-      .card-header{
-        display: block;
+
+    .avatar-box {
+      width: 2.66667rem;
+      height: 2.66667rem;
+      position: absolute;
+      top: -1.33333rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+
+      .avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
       }
     }
   }
-}
-@media screen and (max-width: 750px){
-  .content{
-    padding-top: 56px;
-    .card{
-      margin-top: 0;
-      .card-header{
-        display: none;
+
+  .tags {
+    padding: 0.42667rem;
+    text-align: center;
+
+    .tag {
+      margin-bottom: 0.42667rem;
+      margin-right: 0.42667rem;
+    }
+  }
+
+  .mu-carousel {
+    height: 5.33333rem;
+    margin-top: 0.53333rem;
+  }
+
+  .mu-carousel-item > img {
+    height: 100%;
+  }
+
+  .card {
+    max-width: 15rem;
+    width: 15rem;
+    margin: 0 auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .content {
+      padding-top: 64px;
+
+      .card {
+        margin-top: 100px;
+
+        .card-header {
+          display: block;
+        }
       }
     }
   }
-}
+
+  @media screen and (max-width: 750px) {
+    .content {
+      padding-top: 56px;
+
+      .card {
+        margin-top: 0;
+
+        .card-header {
+          display: none;
+        }
+      }
+    }
+  }
 </style>

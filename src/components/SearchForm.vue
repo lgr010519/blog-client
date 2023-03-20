@@ -12,8 +12,9 @@
           open-on-focus
           avatar
           full-width
-          @change="handleSearch"
+          @input="handleSearch"
           :action-click="handleSearch"
+          autofocus
         >
           <template slot-scope="scope">
             <mu-list-item-action>
@@ -29,16 +30,16 @@
         <mu-list-item :key="item._id" v-for="item in list" button @click="goDetail(item)">
           <mu-list-item-action>
             <mu-avatar>
-              <img :src="item.cover" />
+              <img :src="item.cover"/>
             </mu-avatar>
           </mu-list-item-action>
-          <mu-list-item-content>
+          <mu-list-item-content style="width: 693px;">
             <mu-list-item-title>{{item.title}}</mu-list-item-title>
             <mu-list-item-sub-title>
               <span>{{item.introduction}}</span>
             </mu-list-item-sub-title>
           </mu-list-item-content>
-          <mu-list-item-action style="min-width:140px;">{{item.createTime | filterDate}}</mu-list-item-action>
+          <mu-list-item-action style="width: 92px;text-align: center;">{{item.createTime}}</mu-list-item-action>
         </mu-list-item>
       </mu-list>
 
@@ -49,119 +50,97 @@
   </div>
 </template>
 <script>
-export default {
-  props: ["open"],
-  computed: {
-    openModal: {
-      get() {
-        return this.open;
-      },
-      set(val) {
-        this.clear(val);
-      }
-    }
-  },
-  data() {
-    return {
-      keywords: [
-        'Apple', 'Apricot', 'Avocado',
-        'Banana', 'Bilberry', 'Blackberry', 'Blackcurrant', 'Blueberry',
-        'Boysenberry', 'Blood Orange',
-        'Cantaloupe', 'Currant', 'Cherry', 'Cherimoya', 'Cloudberry',
-        'Coconut', 'Cranberry', 'Clementine',
-        'Damson', 'Date', 'Dragonfruit', 'Durian',
-        'Elderberry',
-        'Feijoa', 'Fig',
-        'Goji berry', 'Gooseberry', 'Grape', 'Grapefruit', 'Guava',
-        'Honeydew', 'Huckleberry',
-        'Jabouticaba', 'Jackfruit', 'Jambul', 'Jujube', 'Juniper berry',
-        'Kiwi fruit', 'Kumquat',
-        'Lemon', 'Lime', 'Loquat', 'Lychee',
-        'Nectarine',
-        'Mango', 'Marion berry', 'Melon', 'Miracle fruit', 'Mulberry', 'Mandarine',
-        'Olive', 'Orange',
-        'Papaya', 'Passionfruit', 'Peach', 'Pear', 'Persimmon', 'Physalis', 'Plum', 'Pineapple',
-        'Pumpkin', 'Pomegranate', 'Pomelo', 'Purple Mangosteen',
-        'Quince',
-        'Raspberry', 'Raisin', 'Rambutan', 'Redcurrant',
-        'Salal berry', 'Satsuma', 'Star fruit', 'Strawberry', 'Squash', 'Salmonberry',
-        'Tamarillo', 'Tamarind', 'Tomato', 'Tangerine',
-        'Ugli fruit',
-        'Watermelon'
-      ],
-      keyword: "",
-      list: [{
-        categories: "技术",
-        collect: 0,
-        comment: 0,
-        content:
-          "### 1.toRefs↵把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref↵↵`应用`: ",
-        cover: "http://nevergiveupt.top/vue/vue_composition_api.jpeg",
-        createTime: 1611739740,
-        introduction:
-          "toRefs把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。",
-        isCollect: true,
-        isComment: true,
-        isLike: true,
-        isReward: false,
-        like: 0,
-        publishStatus: 1,
-        sort: 0,
-        status: 1,
-        tags: ["Vue"],
-        title: "Vue3.x-toRefs & shallowReactive & shallowRef & shallowReadonly",
-        updateTime: 1611739813,
-        views: 5,
-        _id: "6011325cc4ae0128013d3210",
-      }],
-      fullscreen: false
+    import {getArticles} from "@/api/articles";
+    import moment from "moment"
+
+    export default {
+        props: ["open"],
+        computed: {
+            openModal: {
+                get() {
+                    return this.open;
+                },
+                set(val) {
+                    this.clear(val);
+                }
+            }
+        },
+        data() {
+            return {
+                keywords: [],
+                keyword: "",
+                list: [],
+                fullscreen: false,
+                timer: null,
+            };
+        },
+        mounted() {
+
+        },
+        methods: {
+            clear(val) {
+                this.keyword = "";
+                this.$emit("toggle", val);
+                this.list = [];
+            },
+            handleSearch() {
+                if (this.timer) clearTimeout(this.timer) // 防抖
+                this.timer = setTimeout(async () => {
+                    const res = await getArticles({
+                        title: this.keyword,
+                        page: 1,
+                        pageSize: 9999,
+                        status: 1,
+                        publishStatus: 1,
+                    })
+                    if (res.code === 200) {
+                        const handleRes = res.data.list
+                        handleRes.map(item => {
+                            item.createTime = moment(item.createTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+                        })
+                        this.list = handleRes
+                    }
+                }, 500)
+            },
+            goDetail(item) {
+                this.clear();
+                this.$router.push({
+                    name: "articlesDetails",
+                    query: {id: item._id}
+                });
+            }
+        },
+        watch: {
+            openModal(newVal) {
+                if (newVal) {
+                    this.handleSearch()
+                }
+            }
+        }
     };
-  },
-  mounted() {
-    this.getTags();
-  },
-  methods: {
-    async getTags() {
-      // 接口请求获取默认的标签列表
-    },
-    clear(val) {
-      this.keyword = "";
-      this.$emit("toggle", val);
-      this.list = [];
-    },
-    async handleSearch() {
-      if (!this.keyword) return;
-      // 接口请求搜索 传递this.keyword
-    },
-    goDetail(item) {
-      this.clear();
-      this.$router.push({
-        name: "articlesDetails",
-        query: { id: item._id }
-      });
-    }
-  }
-};
 </script>
 <style lang="less" scoped>
-.list {
-  overflow-y: auto;
-  max-height: 450px;
-}
-.no-content {
-  text-align: center;
-}
-@media screen and (max-width: 750px) {
-  .close {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+  .list {
+    overflow-y: auto;
+    max-height: 450px;
   }
-}
-@media screen and (min-width: 750px) {
-  .close {
-    display: none;
+
+  .no-content {
+    text-align: center;
   }
-}
+
+  @media screen and (max-width: 750px) {
+    .close {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .close {
+      display: none;
+    }
+  }
 </style>

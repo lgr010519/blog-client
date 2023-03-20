@@ -17,7 +17,8 @@
             </mu-card-media>
             <mu-card-actions class="sub-title">
               <mu-button class="cursor-default" flat color="warning">字数（{{info.content?.length}}）</mu-button>
-              <mu-button class="cursor-default" flat color="secondary">阅读大约{{(info.content?.length/500).toFixed(0)}}分钟</mu-button>
+              <mu-button class="cursor-default" flat color="secondary">阅读大约{{(info.content?.length/500).toFixed(0)}}分钟
+              </mu-button>
               <mu-button class="cursor-default" flat color="info">查看（{{info.views}}）</mu-button>
               <mu-button class="cursor-default" flat color="error">评论（{{info.comment}}）</mu-button>
               <mu-button class="cursor-default" flat color="primary">点赞（{{info.like}}）</mu-button>
@@ -48,7 +49,7 @@
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="收藏">
-              <mu-button fab color="purple500">
+              <mu-button fab color="purple500" @click="collect">
                 <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
@@ -84,7 +85,8 @@
     import CommentList from "@/components/CommentList"
     import PrevNext from "@/components/PrevNext";
     import Clipboard from 'clipboard'
-    import {getArticleDetail,addViews} from "@/api/articles";
+    import {getArticleDetail, addViews} from "@/api/articles";
+    import {updateUserCollectNum} from "@/api/user";
     import moment from "moment";
 
     export default {
@@ -200,8 +202,8 @@
         },
         mounted() {
             document.body.scrollIntoView({
-                block:'start',
-                behavior:'smooth'
+                block: 'start',
+                behavior: 'smooth'
             })
             this.getArticleDetail()
             this.addViews()
@@ -240,9 +242,24 @@
                     this.info = handleRes
                 }
             },
-            async addViews(){
-                const res = await addViews(this.$route.query)
-                console.log('res',res)
+            async addViews() {
+                await addViews(this.$route.query)
+            },
+            async collect() {
+                const res = await updateUserCollectNum({
+                    articleId: this.$route.query.id,
+                    email: JSON.parse(localStorage.getItem('userInfo')).email
+                })
+            }
+        },
+        watch: {
+            '$route.query.id': {
+                handler(newVal, oldVal) {
+                    if (newVal !== oldVal) {
+                        location.reload()
+                    }
+                },
+                deep: true
             }
         }
     }
@@ -419,5 +436,9 @@
     .left-box {
       width: 100%;
     }
+  }
+
+  /deep/ .mu-button-wrapper {
+    text-transform: lowercase;
   }
 </style>

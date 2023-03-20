@@ -13,7 +13,7 @@
               <mu-icon value="arrow_forward"></mu-icon>
             </mu-button>
           </div>
-          <mu-list-item button v-for="item in articles" :key="item._id">
+          <mu-list-item button v-for="item in articles" :key="item._id" @click="goDetail(item)">
             <mu-list-item-title class="item">
               <span class="title">{{item.title}}</span>
               <span>{{item.createTime}}</span>
@@ -21,27 +21,10 @@
           </mu-list-item>
         </mu-list>
         <div class="pagination">
-          <mu-pagination raised circle :total="6" :current.sync="currentPage"
-                         :page-size.sync="pageSize"></mu-pagination>
+          <mu-pagination raised circle :total="totalCount" :current.sync="page"
+                         :page-size.sync="pageSize" @change="pageChange"></mu-pagination>
         </div>
       </mu-paper>
-      <div class="mobile-box">
-        <mu-list>
-          <div class="sub-title">标签-Vue（100）</div>
-          <mu-list-item button>
-            <mu-list-item-title class="item">
-              <span class="title">文章标题</span>
-              <span>2022-08-20 20:30</span>
-            </mu-list-item-title>
-          </mu-list-item>
-        </mu-list>
-        <div class="mobile-footer">
-          <Footer></Footer>
-        </div>
-      </div>
-      <mu-button class="mobile-backBtn" small fab color="#fff" @click="$router.go(-1)">
-        <mu-icon color="#ccc" value="arrow_back"></mu-icon>
-      </mu-button>
     </div>
   </div>
 </template>
@@ -61,9 +44,10 @@
         data() {
             return {
                 articles: [],
+                totalCount: 0,
                 tagsDetailBg: require('@/assets/categoryBg.png'),
-                currentPage: 1,
-                pageSize: 15,
+                page: 1,
+                pageSize: 6,
             }
         },
         mounted() {
@@ -72,16 +56,31 @@
         methods: {
             async getArticlesByTags() {
                 const res = await getArticlesByTags({
-                    tag: this.$route.query.id
+                    tag: this.$route.query.id,
+                    page: this.page,
+                    pageSize: this.pageSize,
                 })
                 if (res.code === 200) {
-                    const handleRes = res.data
+                    const handleRes = res.data.articles
                     handleRes.map(item => {
                         item.createTime = moment(item.createTime * 1000).format('YYYY-MM-DD HH:mm:ss')
                     })
                     this.articles = handleRes
+                    this.totalCount = res.data.totalCount
                 }
-            }
+            },
+            pageChange(page) {
+                this.page = page
+                this.getArticlesByTags()
+            },
+            goDetail(item) {
+                this.$router.push({
+                    name: 'articlesDetails',
+                    query: {
+                        id: item._id
+                    }
+                })
+            },
         }
     }
 </script>

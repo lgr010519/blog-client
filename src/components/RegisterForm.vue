@@ -12,6 +12,7 @@
       <mu-form ref="form" :model="validateForm" label-width="100" label-position="right">
         <mu-form-item label="邮箱(必填)" prop="email" :rules="emailRules">
           <mu-text-field
+            placeholder="请输入邮箱"
             v-model.trim="validateForm.email"
             prop="email"
           ></mu-text-field>
@@ -19,6 +20,7 @@
 
         <mu-form-item label="昵称(必填)" prop="nickName" :rules="nickNameRules">
           <mu-text-field
+            placeholder="请输入昵称"
             v-model.trim="validateForm.nickName"
             prop="nickName"
           ></mu-text-field>
@@ -30,6 +32,7 @@
           :rules="passwordRules"
         >
           <mu-text-field
+            placeholder="请输入登录密码"
             v-model.trim="validateForm.password"
             prop="password"
             :action-icon="visibility ? 'visibility_off' : 'visibility'"
@@ -44,6 +47,7 @@
           :rules="confirmPasswordRules"
         >
           <mu-text-field
+            placeholder="请输入确认密码"
             type="password"
             v-model.trim="validateForm.confirmPassword"
             prop="confirmPassword"
@@ -52,6 +56,7 @@
 
         <mu-form-item label="头像(必填)" prop="avatar" :rules="avatarRules">
           <mu-text-field
+            placeholder="请输入头像地址"
             v-model.trim="validateForm.avatar"
             prop="avatar"
           ></mu-text-field>
@@ -63,6 +68,7 @@
           :rules="introductionRules"
         >
           <mu-text-field
+            placeholder="请输入个人简介"
             v-model="validateForm.introduction"
             prop="introduction"
             multi-line
@@ -73,7 +79,7 @@
 
         <mu-form-item label="验证码(必填)" prop="captcha" :rules="captchaRules">
           <mu-text-field
-            placeholder="区分大小写"
+            placeholder="请输入验证码"
             v-model.trim="validateForm.captcha"
             prop="captcha"
           >
@@ -113,7 +119,7 @@ export default {
         {validate: (val) => !!val, message: "邮箱不能为空"},
         {
           validate: (val) => {
-            let reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+            let reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
             return reg.test(val);
           },
           message: "邮箱格式不正确",
@@ -144,7 +150,7 @@ export default {
       ],
       captchaRules: [
         {validate: (val) => !!val, message: "请输入验证码"},
-        {validate: (val) => val === this.captchaText, message: "验证码错误"},
+        {validate: (val) => val.toLowerCase() === this.captchaText, message: "验证码错误"},
       ],
       avatarRules: [{validate: (val) => !!val, message: "请输入头像地址"}],
       introductionRules: [
@@ -169,7 +175,7 @@ export default {
       const res = await getCaptcha()
       if (res.code === 200){
         this.captcha = res.data.data
-        this.captchaText = res.data.text
+        this.captchaText = res.data.text.toLowerCase()
       }
     },
     submit() {

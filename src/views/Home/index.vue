@@ -1,6 +1,6 @@
 <template>
   <div>
-<!--    <IndexAnimation></IndexAnimation>-->
+    <IndexAnimation></IndexAnimation>
     <Header background="transparent"></Header>
     <div class="common">
       <div class="home">

@@ -10,7 +10,7 @@
             id:item.name,
             count:item.articleNum,
           }}">
-          <mu-chip class="tag" v-if="item.articleNum>0" :color="item.color">{{item.name}}({{item.articleNum}})</mu-chip>
+          <mu-chip class="tag" :color="item.color">{{item.name}}({{item.articleNum}})</mu-chip>
         </router-link>
       </div>
     </div>
