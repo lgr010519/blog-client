@@ -1,9 +1,11 @@
 <template>
   <div class="user">
     <mu-card class="slider-card">
-      <mu-button color="grey600" class="edit" icon @click="openUpdateModal = true">
-        <mu-icon value="edit"></mu-icon>
-      </mu-button>
+      <mu-tooltip content="修改资料" placement="bottom-start">
+        <mu-button color="grey600" class="edit" icon @click="openUpdateModal = true">
+          <mu-icon value="edit"></mu-icon>
+        </mu-button>
+      </mu-tooltip>
       <mu-avatar class="avatar" size="100">
         <img v-lazy="userInfo.avatar">
       </mu-avatar>
@@ -30,12 +32,14 @@
         </mu-menu>
       </mu-appbar>
       <div class="wrapper">
-        <div class="card-box">
+        <div v-if="collectList.length > 0" class="card-box">
           <mu-card class="card" v-for="item in collectList" :key="item._id">
-            <mu-card-media :title="item.title">
+            <mu-card-media :title="item.title" @click="goDetail(item)" style="cursor: pointer;">
               <img :src="item.cover" alt="">
             </mu-card-media>
-            <mu-card-text class="introduction" @click="goDetail(item)">{{item.introduction}}</mu-card-text>
+            <mu-tooltip :content="item.introduction" placement="top">
+              <mu-card-text class="introduction">{{item.introduction}}</mu-card-text>
+            </mu-tooltip>
             <mu-card-actions class="action">
               <mu-button flat color="pink500" @click="cancelCollect(item._id)">
                 <mu-icon value="remove_circle"></mu-icon>
@@ -48,6 +52,7 @@
             </mu-card-actions>
           </mu-card>
         </div>
+        <div v-else class="empty-text">此处空空如也......</div>
       </div>
     </div>
   </div>
@@ -55,7 +60,7 @@
 
 <script>
     import UpdateUserForm from '@/components/UpdateUserForm'
-    import {getUserInfo} from "@/api/user";
+    import {getUserInfo, getCollectArticles, updateUserCollectNum} from "@/api/user";
 
     export default {
         name: "user",
@@ -64,37 +69,20 @@
         },
         data() {
             return {
-                // email: JSON.parse(localStorage.getItem('user')).email,
                 openUpdateModal: false,
-                collectList: [{
-                    categories: "技术",
-                    collect: 0,
-                    comment: 0,
-                    content:
-                        "### 1.toRefs↵把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref↵↵`应用`: ",
-                    cover: "http://nevergiveupt.top/vue/vue_composition_api.jpeg",
-                    createTime: 1611739740,
-                    introduction:
-                        "toRefs把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。",
-                    isCollect: true,
-                    isComment: true,
-                    isLike: true,
-                    isReward: false,
-                    like: 0,
-                    publishStatus: 1,
-                    sort: 0,
-                    status: 1,
-                    tags: ["Vue"],
-                    title: "Vue3.x-toRefs & shallowReactive & shallowRef & shallowReadonly",
-                    updateTime: 1611739813,
-                    views: 5,
-                    _id: "6011325cc4ae0128013d3210",
-                }],
+                collectList: [],
                 userInfo: {},
             }
         },
         mounted() {
-            this.getUserInfo()
+            this.getUserInfo().then(async () => {
+                const res = await getCollectArticles({
+                    articleIds: this.userInfo.articleIds
+                })
+                if (res.code === 200) {
+                    this.collectList = res.data.collectArticles
+                }
+            })
         },
         methods: {
             uploadFile(e) {
@@ -108,8 +96,19 @@
                     }
                 })
             },
-            cancelCollect() {
-
+            async cancelCollect(id) {
+                const res = await updateUserCollectNum({
+                    articleId: id,
+                    email: JSON.parse(localStorage.getItem('userInfo')).email,
+                    reduceCollect: !!id,
+                    reduceCollectAll: !id,
+                })
+                if (res.code === 200) {
+                    this.$toast.success(res.msg)
+                    setTimeout(() => {
+                        location.reload()
+                    }, 600)
+                }
             },
             like() {
 
@@ -138,11 +137,12 @@
     left: 0;
 
     .slider-card {
-      width: 5rem;
-      position: relative;
+      width: 17%;
+      height: 100%;
+      position: fixed;
       text-align: center;
       padding: 16px;
-      border-radius: 0;
+      z-index: 9999;
 
       .edit {
         position: absolute;
@@ -185,20 +185,33 @@
     flex: 1;
 
     .wrapper {
-      padding-left: 5%;
-      padding-top: 90px;
+      padding-top: 100px;
 
       .card-box {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
+        margin-left: 350px;
+      }
+
+      .empty-text{
+        margin-left: 17%;
+        margin-top: 250px;
+        text-align: center;
+        font-size: 18px;
+        color: #cccccc;
       }
 
       .card {
         width: 100%;
-        margin-right: 4%;
-        margin-bottom: 20px;
+        margin-right: 5%;
+        margin-bottom: 40px;
         max-width: 6rem;
+
+        &:hover {
+          transform: scale(1.1);
+          transition: all .6s;
+        }
 
         .mu-card-media {
           img {
@@ -209,16 +222,27 @@
     }
   }
 
+  .introduction {
+    height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+
   .action {
     display: flex;
     justify-content: space-around;
   }
 
-  .introduction {
-    cursor: pointer;
-  }
-
   /deep/ .mu-menu {
     height: 75%;
+  }
+
+  /deep/ .mu-appbar {
+    position: fixed;
+    right: 0;
+    width: 83%;
   }
 </style>

@@ -42,7 +42,7 @@
               </mu-button>
             </mu-card-actions>
           </mu-card>
-          <div class="action-list">
+          <div class="right-action-list">
             <mu-tooltip placement="top" content="点赞">
               <mu-button fab color="primary">
                 <mu-icon value="thumb_up"></mu-icon>
@@ -54,22 +54,33 @@
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="评论">
-              <mu-button fab color="red">
+              <mu-button fab color="red" @click="toComment">
                 <mu-icon value="chat"></mu-icon>
+              </mu-button>
+            </mu-tooltip>
+          </div>
+          <div class="action-list" ref="comment">
+            <mu-tooltip placement="top" content="点赞">
+              <mu-button fab color="primary">
+                <mu-icon value="thumb_up"></mu-icon>
+              </mu-button>
+            </mu-tooltip>
+            <mu-tooltip placement="top" content="收藏">
+              <mu-button fab color="purple500" @click="collect">
+                <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
           </div>
           <!--          评论-->
           <mu-card class="card" id="comment">
-            <Comment @comment="comment" :commentSuccess="commentSuccess"></Comment>
+            <Comment @comment="comment" :commentSuccess="commentSuccess" :focusComment="focusComment"></Comment>
           </mu-card>
           <!--          评论列表-->
           <mu-card v-if="commentList.length > 0" class="card">
-            <mu-card-title title="评论（3）"></mu-card-title>
+            <mu-card-title :title="`评论（${info.comment}）`"></mu-card-title>
             <mu-divider></mu-divider>
             <CommentList :list="commentList" :articleId="info._id" :articleTitle="info.title"></CommentList>
           </mu-card>
-          <prev-next :prev="prev" :next="next"></prev-next>
         </div>
       </div>
     </div>
@@ -83,10 +94,10 @@
     import RightConfig from "@/components/RightConfig";
     import Comment from "@/components/Comment";
     import CommentList from "@/components/CommentList"
-    import PrevNext from "@/components/PrevNext";
     import Clipboard from 'clipboard'
     import {getArticleDetail, addViews} from "@/api/articles";
     import {updateUserCollectNum} from "@/api/user";
+    import {comment, getCommentList} from "@/api/comment";
     import moment from "moment";
 
     export default {
@@ -97,107 +108,14 @@
             RightConfig,
             Comment,
             CommentList,
-            PrevNext,
         },
         data() {
             return {
                 info: {},
                 toc: [],
                 commentSuccess: false,
-                commentList: [
-                    {
-                        targetReplayId: "6084ce48e268db458626591a",
-                        targetReplayContent: "good",
-                        currentReplayContent: "这篇文章写得不错",
-                        commentTime: 1623048202,
-                        auditTime: 0,
-                        auditStatus: "3",
-                        _id: "60bdc00ac4b76ef12cd151aa",
-                        avatar: "http://www.nevergiveupt.top/user_avatar.png",
-                        email: "13412345678@163.com",
-                        nickName: "Never",
-                        articleId: "601134b4c4ae0128013d322d",
-                        articleTitle: "测试评论文章",
-                    },
-                    {
-                        targetReplayId: "",
-                        targetReplayContent: "",
-                        currentReplayContent: "good",
-                        commentTime: 1619316296,
-                        auditTime: 1619316309,
-                        auditStatus: "1",
-                        _id: "6084ce48e268db458626591a",
-                        avatar:
-                            "http://img.nevergiveupt.top/78e79747e0658b0d1766c8928d784653.png",
-                        email: "1916579055@qq.com",
-                        nickName: "永不放弃",
-                        articleId: "601134b4c4ae0128013d322d",
-                        articleTitle: "测试评论文章",
-                    },
-                    {
-                        targetReplayId: "",
-                        targetReplayContent: "",
-                        currentReplayContent: "好，不错",
-                        commentTime: 1611745373,
-                        auditTime: 1612108800,
-                        auditStatus: "1",
-                        _id: "6011485dc4ae0128013d3246",
-                        avatar:
-                            "http://img.nevergiveupt.top/78e79747e0658b0d1766c8928d784653.png",
-                        email: "1916579055@qq.com",
-                        nickName: "永不放弃",
-                        articleId: "601134b4c4ae0128013d322d",
-                        articleTitle: "测试评论文章",
-                    },
-                ],
-                prev: {
-                    categories: "技术",
-                    collect: 0,
-                    comment: 0,
-                    content:
-                        "### 1.toRefs↵把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref↵↵`应用`: ",
-                    cover: "http://nevergiveupt.top/vue/vue_composition_api.jpeg",
-                    createTime: 1611739740,
-                    introduction:
-                        "toRefs把一个响应式对象转换成普通对象，该普通对象的每个 property 都是一个 ref ，和响应式对象 property 一一对应。",
-                    isCollect: true,
-                    isComment: true,
-                    isLike: true,
-                    isReward: false,
-                    like: 0,
-                    publishStatus: 1,
-                    sort: 0,
-                    status: 1,
-                    tags: ["Vue"],
-                    title: "Vue3.x-toRefs & shallowReactive & shallowRef & shallowReadonly",
-                    updateTime: 1611739813,
-                    views: 5,
-                    _id: "6011325cc4ae0128013d3210",
-                },
-                next: {
-                    categories: "技术",
-                    collect: 0,
-                    comment: 0,
-                    content:
-                        "### 1.注册GitHub账号并创建一个OAuth Apps↵↵登录GitHub账号然后右上角找到你的头像点击",
-                    cover: "http://nevergiveupt.top/egg/github_signin.png",
-                    createTime: 1612341189,
-                    introduction:
-                        "『登录鉴权』 是一个常见的业务场景，包括『账号密码登录方式』和『第三方统一登录』。其中，后者我们经常使用到，如 Google， GitHub，QQ 统一登录，它们都是基于 OAuth 规范。",
-                    isCollect: true,
-                    isComment: true,
-                    isLike: true,
-                    isReward: true,
-                    like: 1,
-                    publishStatus: 1,
-                    sort: 0,
-                    status: 1,
-                    tags: ["Node.js", "Egg"],
-                    title: "使用Egg通过GitHub来实现用户登录",
-                    updateTime: 1612341807,
-                    views: 6,
-                    _id: "601a5fc5e268db458626523d",
-                },
+                commentList: [],
+                userInfo: JSON.parse(localStorage.getItem('userInfo')),
             }
         },
         mounted() {
@@ -205,7 +123,9 @@
                 block: 'start',
                 behavior: 'smooth'
             })
-            this.getArticleDetail()
+            this.getArticleDetail().then(() => {
+                this.getCommentList()
+            })
             this.addViews()
             this.$nextTick(() => {
                 let clipboard = new Clipboard('.copy-btn')
@@ -216,12 +136,24 @@
                     this.$toast.success('复制失败')
                 })
             })
-            this.commentList = this.listToTree(this.commentList)
         },
         methods: {
-            comment(data) {
-                console.log('评论数据', data)
-                this.commentSuccess = true
+            async comment(data) {
+                const res = await comment({
+                    targetReplayId: "",
+                    targetReplayContent: "",
+                    currentReplayContent: data.content,
+                    avatar: this.userInfo.avatar,
+                    email: this.userInfo.email,
+                    nickName: this.userInfo.nickName,
+                    articleId: this.$route.query.id,
+                    articleTitle: this.info.title,
+                })
+                if (res.code === 200) {
+                    this.commentSuccess = true
+                    this.$toast.success(res.msg)
+                    location.reload()
+                }
             },
             listToTree(list) {
                 let info = list.reduce(
@@ -248,8 +180,32 @@
             async collect() {
                 const res = await updateUserCollectNum({
                     articleId: this.$route.query.id,
-                    email: JSON.parse(localStorage.getItem('userInfo')).email
+                    email: JSON.parse(localStorage.getItem('userInfo')).email,
+                    addCollect: true
                 })
+                if (res.code === 200) {
+                    this.$toast.success(res.msg)
+                } else {
+                    this.$toast.info(res.msg)
+                }
+            },
+            async getCommentList() {
+                const res = await getCommentList({
+                    auditStatus: '0', // 全部
+                    articleTitle: this.info.title,
+                })
+                if (res.code === 200) {
+                    this.commentList = this.listToTree(res.data.list)
+                }
+            },
+            toComment() {
+                this.$refs.comment.scrollIntoView({
+                    block: 'start',
+                    behavior: 'smooth'
+                })
+            },
+            focusComment(ref) {
+                ref.focus()
             }
         },
         watch: {
@@ -440,5 +396,15 @@
 
   /deep/ .mu-button-wrapper {
     text-transform: lowercase;
+  }
+
+  .right-action-list {
+    position: fixed;
+    display: flex;
+    justify-content: space-around;
+    width: 329px;
+    height: 250px;
+    right: 0;
+    bottom: 0;
   }
 </style>

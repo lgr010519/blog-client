@@ -2,6 +2,7 @@
   <div class="clearfix">
     <mu-card-title></mu-card-title>
     <mu-text-field
+      ref="commentTextField"
       class="comment-input"
       placeholder="说点什么..."
       multi-line
@@ -25,54 +26,59 @@
   </div>
 </template>
 <script>
-export default {
-  props: {
-    commentSuccess: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      content: "",
-      openAlert: false,
+    export default {
+        props: {
+            commentSuccess: {
+                type: Boolean,
+                default: false,
+            },
+            focusComment :{
+                type: function () {},
+                default: false,
+            }
+        },
+        data() {
+            return {
+                content: "",
+                openAlert: false,
+            };
+        },
+        methods: {
+            submit() {
+                if (this.content) {
+                    this.openAlert = true;
+                } else {
+                    this.$toast.info("请输入评论内容");
+                }
+            },
+            ok(bool) {
+                if (bool) {
+                    this.$emit("comment", {
+                        content: this.content,
+                    });
+                } else {
+                    this.openAlert = false;
+                }
+            },
+        },
+        watch: {
+            // 评论成功后关闭弹框
+            commentSuccess(val) {
+                if (val) {
+                    this.openAlert = !val;
+                    this.content = "";
+                }
+            },
+        },
     };
-  },
-  methods: {
-    submit() {
-      if (this.content) {
-        this.openAlert = true;
-      } else {
-        this.$toast.info("请输入评论内容");
-      }
-    },
-    ok(bool) {
-      if (bool) {
-        this.$emit("comment", {
-          content: this.content,
-        });
-      } else {
-        this.openAlert = false;
-      }
-    },
-  },
-  watch: {
-    // 评论成功后关闭弹框
-    commentSuccess(val) {
-      if (val) {
-        this.openAlert = !val;
-        this.content = "";
-      }
-    },
-  },
-};
 </script>
 <style lang="less" scoped>
-.comment-input {
-  padding: 0 0.42667rem;
-}
-.comment-btn {
-  margin: 0 0.42667rem 0.42667rem 0;
-  float: right;
-}
+  .comment-input {
+    padding: 0 0.42667rem;
+  }
+
+  .comment-btn {
+    margin: 0 0.42667rem 0.42667rem 0;
+    float: right;
+  }
 </style>

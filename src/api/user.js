@@ -23,3 +23,11 @@ export function updateUserCollectNum(data){
         data,
     })
 }
+
+export function getCollectArticles(data){
+    return request({
+        url: '/articles/byIds',
+        method: 'POST',
+        data,
+    })
+}
