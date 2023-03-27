@@ -22,3 +22,11 @@ export function addViews(data) {
         data,
     })
 }
+
+export function addLikes(data) {
+    return request({
+        url: `/articles/addLikes`,
+        method: 'PUT',
+        data,
+    })
+}

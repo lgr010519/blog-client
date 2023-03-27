@@ -34,7 +34,7 @@
             </mu-avatar>
           </mu-list-item-action>
           <mu-list-item-content style="width: 693px;">
-            <mu-list-item-title>{{item.title}}</mu-list-item-title>
+            <mu-list-item-title v-html="item.title"></mu-list-item-title>
             <mu-list-item-sub-title>
               <span>{{item.introduction}}</span>
             </mu-list-item-sub-title>
@@ -97,6 +97,10 @@
                         const handleRes = res.data.list
                         handleRes.map(item => {
                             item.createTime = moment(item.createTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+                            const lowerCaseTitle = item.title.toLowerCase()
+                            const index = lowerCaseTitle.indexOf(this.keyword.toLowerCase())
+                            const sliceStr = item.title.slice(index, index + this.keyword.length)
+                            item.title = item.title.replace(sliceStr, `<strong style="color: rgb(33,150,243);">${sliceStr}</strong>`)
                         })
                         this.list = handleRes
                     }
@@ -123,6 +127,26 @@
   .list {
     overflow-y: auto;
     max-height: 450px;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.2);
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0);
+    }
   }
 
   .no-content {

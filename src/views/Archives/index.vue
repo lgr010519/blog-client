@@ -7,7 +7,7 @@
           <div class="timeline-info"></div>
           <div class="timeline-marker"></div>
           <div class="timeline-content">
-            <h2 class="timeline-title">2023</h2>
+            <h1 class="timeline-title">2023</h1>
           </div>
         </li>
         <li class="timeline-item" v-for="item in articles" :key="item._id">

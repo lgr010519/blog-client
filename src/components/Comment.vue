@@ -11,18 +11,6 @@
       v-model="content"
     ></mu-text-field>
     <mu-button @click="submit" class="comment-btn" color="primary">评论</mu-button>
-
-    <mu-dialog
-      title="提示"
-      width="600"
-      max-width="80%"
-      :esc-press-close="false"
-      :overlay-close="false"
-      :open.sync="openAlert">
-      评论内容需要审核，大约需要24小时。您确定需要继续操作吗？
-      <mu-button slot="actions" flat color="primary" @click="ok(false)">取消</mu-button>
-      <mu-button slot="actions" flat color="primary" @click="ok(true)">确定</mu-button>
-    </mu-dialog>
   </div>
 </template>
 <script>
@@ -32,32 +20,25 @@
                 type: Boolean,
                 default: false,
             },
-            focusComment :{
-                type: function () {},
+            focusComment: {
+                type: function () {
+                },
                 default: false,
             }
         },
         data() {
             return {
                 content: "",
-                openAlert: false,
             };
         },
         methods: {
             submit() {
                 if (this.content) {
-                    this.openAlert = true;
-                } else {
-                    this.$toast.info("请输入评论内容");
-                }
-            },
-            ok(bool) {
-                if (bool) {
                     this.$emit("comment", {
                         content: this.content,
                     });
                 } else {
-                    this.openAlert = false;
+                    this.$toast.info("请输入评论内容哦");
                 }
             },
         },

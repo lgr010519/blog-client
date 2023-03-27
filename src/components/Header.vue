@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <mu-appbar :color="background">
-      <mu-avatar slot="left" :size="40" class="header-avatar">
+      <mu-avatar slot="left" :size="40" class="header-avatar" @click="goDetail">
         <img :src="userInfo?userInfo.avatar:avatarBg" alt="avatar">
       </mu-avatar>
       <!--       tab栏-->
@@ -284,6 +284,9 @@
                     this.$toast.error('退出登录失败，请重试')
                 }
             },
+            goDetail() {
+                this.$router.push('/user')
+            },
         }
     }
 </script>
@@ -326,8 +329,8 @@
 
   .back-top {
     position: fixed;
-    right: 0.266667rem;
-    bottom: 0.4rem;
+    right: 26px;
+    bottom: 20px;
     background: #595959;
   }
 

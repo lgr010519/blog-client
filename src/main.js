@@ -161,6 +161,10 @@ import Loading from 'muse-ui-loading';
 Vue.use(Loading);
 
 export default new Vue({
+    beforeCreate() {
+        //安装事件总线
+        Vue.prototype.$EventBus = this
+    },
     router,
     render: h => h(App)
 }).$mount('#app')

@@ -37,15 +37,13 @@
             <mu-card-media :title="item.title" @click="goDetail(item)" style="cursor: pointer;">
               <img :src="item.cover" alt="">
             </mu-card-media>
-            <mu-tooltip :content="item.introduction" placement="top">
-              <mu-card-text class="introduction">{{item.introduction}}</mu-card-text>
-            </mu-tooltip>
+            <mu-card-text class="introduction" @click="goDetail(item)">{{item.introduction}}</mu-card-text>
             <mu-card-actions class="action">
               <mu-button flat color="pink500" @click="cancelCollect(item._id)">
                 <mu-icon value="remove_circle"></mu-icon>
                 取消收藏
               </mu-button>
-              <mu-button flat color="primary" @click="like(item._id)">
+              <mu-button class="likeBtn" flat color="primary" @click="like(item._id)">
                 <mu-icon value="thumb_up"></mu-icon>
                 点赞
               </mu-button>
@@ -61,6 +59,7 @@
 <script>
     import UpdateUserForm from '@/components/UpdateUserForm'
     import {getUserInfo, getCollectArticles, updateUserCollectNum} from "@/api/user";
+    import {addLikes} from "@/api/articles";
 
     export default {
         name: "user",
@@ -110,9 +109,6 @@
                     }, 600)
                 }
             },
-            like() {
-
-            },
             toggleUpdateModal(bool) {
                 this.openUpdateModal = bool
             },
@@ -122,6 +118,9 @@
                     this.userInfo = res.data.userInfo
                     localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
                 }
+            },
+            async like(id) {
+                await addLikes({id})
             }
         }
     }
@@ -194,7 +193,7 @@
         margin-left: 350px;
       }
 
-      .empty-text{
+      .empty-text {
         margin-left: 17%;
         margin-top: 250px;
         text-align: center;
@@ -229,6 +228,7 @@
     -webkit-line-clamp: 3;
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    cursor: pointer;
   }
 
   .action {
@@ -244,5 +244,35 @@
     position: fixed;
     right: 0;
     width: 83%;
+  }
+
+  .likeBtn {
+    position: relative;
+    overflow: visible;
+
+    &:after {
+      position: absolute;
+      bottom: 100%;
+      left: 110%;
+      width: max-content;
+      font-size: 40px;
+      font-style: italic;
+      font-weight: bolder;
+      background-image: linear-gradient(#FFCF02, #FF7352);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transform: translateY(100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: .3s .3s, 0s .6s transform;
+      content: '+1';
+    }
+
+    &:active:after {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      transition: .3s;
+    }
   }
 </style>

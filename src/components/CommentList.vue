@@ -9,7 +9,7 @@
       >
         <mu-card-header
           :title="item.nickName"
-          :sub-title="item.commentTime | filterDate"
+          :sub-title="item.commentTime"
         >
           <mu-avatar slot="avatar">
             <img :src="item.avatar"/>
@@ -18,11 +18,11 @@
         <mu-card-text>
           <span v-if="prevWho" class="who">@{{ prevWho }}</span>
           {{ item.currentReplayContent }}
-<!--          <mu-badge-->
-<!--            v-if="item.auditStatus == 3"-->
-<!--            content="未审核"-->
-<!--            color="#ccc"-->
-<!--          ></mu-badge>-->
+          <!--          <mu-badge-->
+          <!--            v-if="item.auditStatus == 3"-->
+          <!--            content="未审核"-->
+          <!--            color="#ccc"-->
+          <!--          ></mu-badge>-->
         </mu-card-text>
 
         <mu-card-actions v-if="user && user.nickName !== item.nickName && user.email !== item.email">
@@ -171,8 +171,8 @@
   }
 
   .sub-card {
-    border-left: 1px dashed #00e676;
-    border-bottom: 1px dashed #00e676;
+    border-left: 1px dashed rgb(59, 162, 244);
+    border-bottom: 1px dashed rgb(59, 162, 244);
     box-shadow: none;
     border-radius: 0;
   }

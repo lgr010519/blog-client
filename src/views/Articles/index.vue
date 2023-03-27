@@ -13,9 +13,14 @@
           <div class="card-box">
             <div class="title">{{ item.title }}</div>
             <mu-card-actions class="sub-title">
-              <mu-button class="cursor-default" flat color="info">查看（{{ item.views }}）</mu-button>
-              <mu-button class="cursor-default" flat color="error">评论（{{ item.comment }}）</mu-button>
-              <mu-button class="cursor-default" flat color="primary">点赞（{{ item.like }}）</mu-button>
+              <mu-button class="cursor-default" flat color="rgb(154,205,50)">查看（{{ item.views }}）
+              </mu-button>
+              <mu-button class="cursor-default" flat color="rgb(33,150,243)">点赞（{{ item.like }}）
+              </mu-button>
+              <mu-button class="cursor-default" flat color="rgb(156,39,176)">收藏（{{ item.collect }}）
+              </mu-button>
+              <mu-button class="cursor-default" flat color="rgb(244,67,54)">评论（{{ item.comment }}）
+              </mu-button>
               <mu-button class="cursor-default" flat color="#9e9e9e">{{ item.createTime }}</mu-button>
             </mu-card-actions>
             <mu-card-text class="text">

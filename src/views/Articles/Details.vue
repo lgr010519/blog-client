@@ -16,13 +16,13 @@
               <img :src="info.cover" style="height: 100%;" alt="cover">
             </mu-card-media>
             <mu-card-actions class="sub-title">
-              <mu-button class="cursor-default" flat color="warning">字数（{{info.content?.length}}）</mu-button>
-              <mu-button class="cursor-default" flat color="secondary">阅读大约{{(info.content?.length/500).toFixed(0)}}分钟
-              </mu-button>
-              <mu-button class="cursor-default" flat color="info">查看（{{info.views}}）</mu-button>
-              <mu-button class="cursor-default" flat color="error">评论（{{info.comment}}）</mu-button>
-              <mu-button class="cursor-default" flat color="primary">点赞（{{info.like}}）</mu-button>
-              <mu-button class="cursor-default" flat color="#9e9e9e">{{info.createTime}}</mu-button>
+              <span class="cursor-default" style="color: #fdd835">字数（{{info.content?.length}}）</span>
+              <span class="cursor-default" style="color: #ff4081">阅读大约{{(info.content?.length/500).toFixed(0)}}分钟</span>
+              <span class="cursor-default" style="color: rgb(154,205,50)">查看（{{info.views}}）</span>
+              <span class="cursor-default" style="color: rgb(33,150,243)">点赞（{{info.like}}）</span>
+              <span class="cursor-default" style="color: rgb(156,39,176)">收藏（{{info.collect}}）</span>
+              <span class="cursor-default" style="color: rgb(244,67,54)">评论（{{info.comment}}）</span>
+              <span class="cursor-default" style="color: #9e9e9e">{{info.createTime}}</span>
             </mu-card-actions>
             <mavon-editor
               v-model="info.content"
@@ -44,29 +44,34 @@
           </mu-card>
           <div class="right-action-list">
             <mu-tooltip placement="top" content="点赞">
-              <mu-button fab color="primary">
+              <mu-button fab color="primary" @click="like" class="operationBtn">
+                <div class="operationBtnContent">{{info.like||0}}</div>
                 <mu-icon value="thumb_up"></mu-icon>
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="收藏">
-              <mu-button fab color="purple500" @click="collect">
+              <mu-button fab color="purple500" @click="collect" class="operationBtn">
+                <div class="operationBtnContent">{{info.collect||0}}</div>
                 <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="评论">
-              <mu-button fab color="red" @click="toComment">
+              <mu-button fab color="red" @click="toComment" class="operationBtn">
+                <div class="operationBtnContent">{{info.comment||0}}</div>
                 <mu-icon value="chat"></mu-icon>
               </mu-button>
             </mu-tooltip>
           </div>
           <div class="action-list" ref="comment">
             <mu-tooltip placement="top" content="点赞">
-              <mu-button fab color="primary">
+              <mu-button fab color="primary" @click="like" class="operationBtn">
+                <div class="operationBtnContent">{{info.like||0}}</div>
                 <mu-icon value="thumb_up"></mu-icon>
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="收藏">
-              <mu-button fab color="purple500" @click="collect">
+              <mu-button fab color="purple500" @click="collect" class="operationBtn">
+                <div class="operationBtnContent">{{info.collect||0}}</div>
                 <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
@@ -95,7 +100,7 @@
     import Comment from "@/components/Comment";
     import CommentList from "@/components/CommentList"
     import Clipboard from 'clipboard'
-    import {getArticleDetail, addViews} from "@/api/articles";
+    import {getArticleDetail, addViews, addLikes} from "@/api/articles";
     import {updateUserCollectNum} from "@/api/user";
     import {comment, getCommentList} from "@/api/comment";
     import moment from "moment";
@@ -184,7 +189,7 @@
                     addCollect: true
                 })
                 if (res.code === 200) {
-                    this.$toast.success(res.msg)
+                    await this.getArticleDetail()
                 } else {
                     this.$toast.info(res.msg)
                 }
@@ -192,10 +197,14 @@
             async getCommentList() {
                 const res = await getCommentList({
                     auditStatus: '0', // 全部
-                    articleTitle: this.info.title,
+                    articleId: this.$route.query.id,
                 })
                 if (res.code === 200) {
-                    this.commentList = this.listToTree(res.data.list)
+                    const handleRes = res.data.list
+                    handleRes.map(item => {
+                        item.commentTime = moment(item.commentTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+                    })
+                    this.commentList = this.listToTree(handleRes)
                 }
             },
             toComment() {
@@ -206,6 +215,12 @@
             },
             focusComment(ref) {
                 ref.focus()
+            },
+            async like() {
+                const res = await addLikes(this.$route.query)
+                if (res.code === 200) {
+                    await this.getArticleDetail()
+                }
             }
         },
         watch: {
@@ -406,5 +421,51 @@
     height: 250px;
     right: 0;
     bottom: 0;
+  }
+
+  .operationBtn {
+    overflow: visible;
+
+    &:after {
+      position: absolute;
+      bottom: 80%;
+      left: 110%;
+      width: max-content;
+      font-size: 40px;
+      font-style: italic;
+      font-weight: bolder;
+      background-image: linear-gradient(#FFCF02, #FF7352);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transform: translateY(100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: .3s .3s, 0s .6s transform;
+      content: '+1';
+    }
+
+    &:active:after {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      transition: .3s;
+    }
+
+    .operationBtnContent {
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      border-radius: 50%;
+      background-color: yellowgreen;
+      font-size: 14px;
+    }
+  }
+
+  .cursor-default {
+    padding: 7px;
+    font-size: 16px;
   }
 </style>
