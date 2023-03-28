@@ -53,8 +53,8 @@
         <p class="friend-link-title">电影推荐</p>
         <div class="friend-links">
           <div class="tags">
+            <mu-chip class="chip">流浪地球</mu-chip>
             <mu-chip class="chip">密室逃生</mu-chip>
-            <mu-chip class="chip">超体</mu-chip>
             <mu-chip class="chip">寂静之地</mu-chip>
           </div>
         </div>
@@ -71,10 +71,11 @@
       </div>
       <div class="friend-link-box">
         <p class="friend-link-title">音乐推荐</p>
-        <div style="margin-top: -6px;margin-bottom: 10px;color: #ccc;">（点击即可播放）</div>
+        <div style="margin-top: -6px;margin-bottom: 8px;color: #ccc;">（点击即可播放）</div>
         <div class="friend-links">
           <div class="tags">
             <mu-chip class="chip" @click="playMusic('ColdHearted')">红颜如霜</mu-chip>
+            <mu-chip class="chip" @click="playMusic('PinkOcean')">粉色海洋</mu-chip>
             <mu-chip class="chip" @click="playMusic('GoodNight')">云烟成雨</mu-chip>
             <mu-chip class="chip" @click="playMusic('SummerWind')">夏天的风</mu-chip>
           </div>
@@ -148,8 +149,12 @@
     }
 
     .tags {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+
       .chip {
-        margin: 0 10px 10px 0;
+        margin: 4px;
       }
     }
 
@@ -202,7 +207,7 @@
   .mp3player {
     position: fixed;
     left: 72px;
-    top: 6px;
+    top: 5px;
     z-index: 9999;
 
     .player {
@@ -212,10 +217,10 @@
     .closePlayer {
       position: absolute;
       left: 290px;
-      top: 13px;
+      top: 12px;
       width: 30px;
       height: 30px;
-      line-height: 30px;
+      line-height: 31px;
       text-align: center;
       font-size: 20px;
       cursor: pointer;

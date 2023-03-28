@@ -87,7 +87,7 @@
                 if (this.timer) clearTimeout(this.timer) // 防抖
                 this.timer = setTimeout(async () => {
                     const res = await getArticles({
-                        title: this.keyword,
+                        title: this.keyword.trim(),
                         page: 1,
                         pageSize: 9999,
                         status: 1,

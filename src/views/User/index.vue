@@ -79,7 +79,9 @@
                     articleIds: this.userInfo.articleIds
                 })
                 if (res.code === 200) {
-                    this.collectList = res.data.collectArticles
+                    const handleRes = res.data.collectArticles
+                    handleRes.sort((a, b) => b.createTime - a.createTime)
+                    this.collectList = handleRes
                 }
             })
         },
