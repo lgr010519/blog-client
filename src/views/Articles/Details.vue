@@ -19,9 +19,9 @@
               <span class="cursor-default" style="color: #fdd835">字数（{{info.content?.length}}）</span>
               <span class="cursor-default" style="color: #ff4081">阅读大约{{(info.content?.length/500).toFixed(0)}}分钟</span>
               <span class="cursor-default" style="color: rgb(154,205,50)">查看（{{info.views}}）</span>
-              <span class="cursor-default" style="color: rgb(33,150,243)">点赞（{{info.like}}）</span>
-              <span class="cursor-default" style="color: rgb(156,39,176)">收藏（{{info.collect}}）</span>
-              <span class="cursor-default" style="color: rgb(244,67,54)">评论（{{info.comment}}）</span>
+              <span class="cursor-default" style="color: rgb(33,150,243)" v-if="info.isLike">点赞（{{info.like}}）</span>
+              <span class="cursor-default" style="color: rgb(156,39,176)"  v-if="info.isCollect">收藏（{{info.collect}}）</span>
+              <span class="cursor-default" style="color: rgb(244,67,54)" v-if="info.isComment">评论（{{info.comment}}）</span>
               <span class="cursor-default" style="color: #9e9e9e">{{info.createTime}}</span>
             </mu-card-actions>
             <mavon-editor
@@ -44,19 +44,19 @@
           </mu-card>
           <div class="right-action-list">
             <mu-tooltip placement="top" content="点赞">
-              <mu-button fab color="primary" @click="like" class="operationBtn">
+              <mu-button fab color="primary" @click="like" class="operationBtn" v-if="info.isLike">
                 <div class="operationBtnContent">{{info.like||0}}</div>
                 <mu-icon value="thumb_up"></mu-icon>
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="收藏">
-              <mu-button fab color="purple500" @click="collect" class="operationBtn">
+              <mu-button fab color="purple500" @click="collect" class="operationBtn" v-if="info.isCollect">
                 <div class="operationBtnContent">{{info.collect||0}}</div>
                 <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="评论">
-              <mu-button fab color="red" @click="toComment" class="operationBtn">
+              <mu-button fab color="red" @click="toComment" class="operationBtn" v-if="info.isComment">
                 <div class="operationBtnContent">{{info.comment||0}}</div>
                 <mu-icon value="chat"></mu-icon>
               </mu-button>
@@ -64,24 +64,24 @@
           </div>
           <div class="action-list" ref="comment">
             <mu-tooltip placement="top" content="点赞">
-              <mu-button fab color="primary" @click="like" class="operationBtn">
+              <mu-button fab color="primary" @click="like" class="operationBtn" v-if="info.isLike">
                 <div class="operationBtnContent">{{info.like||0}}</div>
                 <mu-icon value="thumb_up"></mu-icon>
               </mu-button>
             </mu-tooltip>
             <mu-tooltip placement="top" content="收藏">
-              <mu-button fab color="purple500" @click="collect" class="operationBtn">
+              <mu-button fab color="purple500" @click="collect" class="operationBtn" v-if="info.isCollect">
                 <div class="operationBtnContent">{{info.collect||0}}</div>
                 <mu-icon value="grade"></mu-icon>
               </mu-button>
             </mu-tooltip>
           </div>
           <!--          评论-->
-          <mu-card class="card" id="comment">
+          <mu-card class="card" id="comment" v-if="info.isComment">
             <Comment @comment="comment" :commentSuccess="commentSuccess" :focusComment="focusComment"></Comment>
           </mu-card>
           <!--          评论列表-->
-          <mu-card v-if="commentList.length > 0" class="card">
+          <mu-card v-if="info.isComment && commentList.length > 0" class="card">
             <mu-card-title :title="`评论（${info.comment}）`"></mu-card-title>
             <mu-divider></mu-divider>
             <CommentList :list="commentList" :articleId="info._id" :articleTitle="info.title"></CommentList>

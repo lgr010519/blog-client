@@ -5,17 +5,17 @@
       <ul class="timeline timeline-centered">
         <li class="timeline-item period">
           <div class="timeline-info"></div>
-          <div class="timeline-marker"></div>
-          <div class="timeline-content">
-            <h1 class="timeline-title">2023</h1>
+          <div class="timeline-content year">
+            <div class="timeline-marker"></div>
+            <h1 class="timeline-title year">2023</h1>
           </div>
         </li>
         <li class="timeline-item" v-for="item in articles" :key="item._id">
           <div class="timeline-info">
             <span>{{item.createTime}}</span>
           </div>
-          <div class="timeline-marker"></div>
           <div class="timeline-content" @click="goDetail(item._id)">
+            <div class="timeline-marker"></div>
             <h2 class="timeline-title">{{item.title}}</h2>
             <p>{{item.introduction}}</p>
           </div>
@@ -103,7 +103,6 @@
   .timeline-item {
     padding-left: 40px;
     position: relative;
-    cursor: pointer;
 
     &:last-child {
       padding-bottom: 0;
@@ -127,8 +126,8 @@
     width: 15px;
 
     &:before {
-      background: #2195f2;
-      border: 3px solid transparent;
+      background: transparent;
+      border: 3px solid #2195f2;
       border-radius: 100%;
       content: "";
       display: block;
@@ -156,8 +155,8 @@
     }
   }
 
-  .timeline-item:not(.period):hover .timeline-marker:before {
-    background: transparent;
+  .timeline-content:not(.year):hover .timeline-marker:before {
+    background: #2195f2;
     border: 3px solid #2195f2;
   }
 
@@ -168,6 +167,9 @@
     p:last-child {
       margin-bottom: 0;
     }
+  }
+  .timeline-content:not(.year){
+    cursor: pointer;
   }
 
   .period {
@@ -279,6 +281,10 @@
         width: 50%;
         color: #fff;
       }
+      .timeline-content:not(.year):hover{
+        color: rgb(33,149,242);
+        transition: all .6s;
+      }
 
       > .timeline-item:nth-child(odd) .timeline-info {
         float: left;
@@ -325,5 +331,21 @@
         left: auto;
       }
     }
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.4);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.2);
   }
 </style>

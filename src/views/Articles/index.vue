@@ -15,11 +15,11 @@
             <mu-card-actions class="sub-title">
               <mu-button class="cursor-default" flat color="rgb(154,205,50)">查看（{{ item.views }}）
               </mu-button>
-              <mu-button class="cursor-default" flat color="rgb(33,150,243)">点赞（{{ item.like }}）
+              <mu-button class="cursor-default" flat color="rgb(33,150,243)" v-if="item.isLike">点赞（{{ item.like }}）
               </mu-button>
-              <mu-button class="cursor-default" flat color="rgb(156,39,176)">收藏（{{ item.collect }}）
+              <mu-button class="cursor-default" flat color="rgb(156,39,176)" v-if="item.isCollect">收藏（{{ item.collect }}）
               </mu-button>
-              <mu-button class="cursor-default" flat color="rgb(244,67,54)">评论（{{ item.comment }}）
+              <mu-button class="cursor-default" flat color="rgb(244,67,54)" v-if="item.isComment">评论（{{ item.comment }}）
               </mu-button>
               <mu-button class="cursor-default" flat color="#9e9e9e">{{ item.createTime }}</mu-button>
             </mu-card-actions>

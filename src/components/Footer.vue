@@ -1,8 +1,8 @@
 <template>
   <div class="footer" :class="{'fixed-footer':fixed}">
     <div class="copyright">
-      <a target="_blank" href="https://beian.miit.gov.cn">Copyright © 2022 LIUGAORONG・湘ICP备2022010519号</a>
-      <div>本系统由Vue+Muse-UI提供技术支持</div>
+      <a target="_blank" href="https://beian.miit.gov.cn">Copyright © 2023 LIUGAORONG・湘ICP备2023010519号</a>
+      <div>本系统由 Vue + Muse-UI 提供技术支持</div>
     </div>
   </div>
 </template>

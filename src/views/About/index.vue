@@ -8,8 +8,8 @@
       hide-controls
       style="position: fixed; height: 100%; margin-top: 0"
     >
-      <mu-carousel-item v-for="item in info.imgs" :key="item._id">
-        <img :src="item.imgUrl"/>
+      <mu-carousel-item v-for="item in imgs" :key="item">
+        <img :src="item"/>
       </mu-carousel-item>
     </mu-carousel>
 
@@ -17,12 +17,12 @@
       <mu-card class="card">
         <mu-card-header class="card-header">
           <mu-paper class="avatar-box" circle :z-depth="5">
-            <img class="avatar" v-lazy="avatar"/>
+            <img class="avatar" src="../../assets/bloggerAvatar.jpg"/>
           </mu-paper>
         </mu-card-header>
 
         <mu-card-text>
-          <div v-html="info.intro"></div>
+          <div v-html="info.desc"></div>
         </mu-card-text>
         <div class="tags">
           <mu-chip
@@ -49,9 +49,9 @@
 </template>
 <script>
     import {randomColor} from "@/utils";
-    import {getTags} from "@/api/tags";
     import Header from "@/components/Header";
     import Footer from "@/components/Footer";
+    import {getAboutInfo} from "@/api/about";
 
     export default {
         name: "about",
@@ -61,29 +61,16 @@
         },
         data() {
             return {
-                info: {
-                    imgs: [
-                        {
-                            _id: 1,
-                            imgUrl: "http://www.nevergiveupt.top/index.jpg",
-                        },
-                        {
-                            _id: 2,
-                            imgUrl: "http://www.nevergiveupt.top/tags.jpg",
-                        },
-                        {
-                            _id: 3,
-                            imgUrl: "http://www.nevergiveupt.top/archive.jpg",
-                        },
-                    ],
-                    intro:
-                        "熟悉Vue、React、Angular前端框架，熟悉小程序开发（Taro、Remax、MpVue、Wepy、 云开发）。熟悉NodeJs、Koa，Egg等后端知识。具有良好的沟通能力、工作协调能力、不断学习新技术、熟练前端技术、热衷于前端开发。",
-                    tags: [],
-                },
+                info: {},
+                imgs: [
+                    require('../../assets/aboutBg1.jpg'),
+                    require('../../assets/aboutBg2.jpg'),
+                    require('../../assets/aboutBg3.jpg'),
+                ]
             };
         },
         mounted() {
-            this.getTags()
+            this.getAboutInfo()
         },
 
         methods: {
@@ -106,17 +93,15 @@
                     },
                 ];
             },
-            async getTags() {
-                const res = await getTags({
-                    page: 1,
-                    pageSize: 9999
-                })
+            async getAboutInfo() {
+                const res = await getAboutInfo()
                 if (res.code === 200) {
-                    const handleRes = res.data.list
-                    handleRes.map(item => {
-                        item.color = randomColor()
-                    })
-                    this.info.tags = handleRes
+                    const handleRes = res.data
+                    handleRes.tags = handleRes.tags.map(item => ({
+                        name: item,
+                        color: randomColor(),
+                    }))
+                    this.info = handleRes
                 }
             }
         },
@@ -179,6 +164,12 @@
     max-width: 15rem;
     width: 15rem;
     margin: 0 auto;
+    background-color: rgba(255, 255, 255, .4);
+    transition: all .8s;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
   }
 
   @media screen and (min-width: 750px) {
