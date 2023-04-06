@@ -125,7 +125,8 @@
   }
 
   .slider-card {
-    position: relative;
+    position: sticky;
+    top: 80px;
     margin-top: 16px;
     text-align: center;
     padding: 16px;

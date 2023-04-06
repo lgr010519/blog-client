@@ -280,10 +280,10 @@
       .timeline-content {
         width: 50%;
         color: #fff;
+        transition: all .6s;
       }
       .timeline-content:not(.year):hover{
         color: rgb(33,149,242);
-        transition: all .6s;
       }
 
       > .timeline-item:nth-child(odd) .timeline-info {
