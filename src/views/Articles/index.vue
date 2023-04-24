@@ -148,10 +148,10 @@
           flex-wrap: wrap;
           border-radius: 5px;
           cursor: pointer;
+	      transition: all .6s;
 
           &:hover {
             transform: scale(1.1);
-            transition: all .6s;
           }
 
           .title {

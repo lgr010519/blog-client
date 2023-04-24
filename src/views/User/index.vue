@@ -208,10 +208,10 @@
         margin-right: 5%;
         margin-bottom: 40px;
         max-width: 6rem;
+	    transition: all .6s;
 
         &:hover {
           transform: scale(1.1);
-          transition: all .6s;
         }
 
         .mu-card-media {

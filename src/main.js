@@ -158,7 +158,12 @@ Vue.prototype.avatar = "https://avatars.githubusercontent.com/u/100412666?s=400&
 import 'muse-ui-loading/dist/muse-ui-loading.css';
 import Loading from 'muse-ui-loading';
 
-Vue.use(Loading);
+Vue.use(Loading, {
+    overlayColor: 'hsla(0,0%,100%,.9)',        // 背景色
+    size: 48,
+    color: 'primary',                           // color
+    className: ''                               // loading class name
+});
 
 export default new Vue({
     beforeCreate() {
