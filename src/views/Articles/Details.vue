@@ -462,7 +462,7 @@ export default {
     position: absolute;
     top: -5px;
     left: 35px;
-    border-radius: 50%;
+    border-radius: 13px;
     background-color: yellowgreen;
     font-size: 14px;
   }
